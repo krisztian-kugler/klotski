@@ -1,3 +1,5 @@
+import { Cell } from "./models";
+
 export default class CoverageMatrix {
   private matrix: boolean[][];
 
@@ -21,10 +23,14 @@ export default class CoverageMatrix {
     }
   }
 
+  isAccessible(cells: Cell[]): boolean {
+    return cells.every(cell => this.getValue(cell.col, cell.row));
+  }
+
   reset() {
     for (const row of this.matrix) {
       for (let col of row) {
-        col = false;
+        col = true;
       }
     }
   }
@@ -36,6 +42,6 @@ export default class CoverageMatrix {
   private create() {
     this.matrix = Array(this.rows)
       .fill([])
-      .map(_ => Array(this.cols).fill(false));
+      .map(_ => Array(this.cols).fill(true));
   }
 }
