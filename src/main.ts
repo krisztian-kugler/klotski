@@ -1,5 +1,6 @@
 import "./styles.scss";
 import { Board } from "./board";
+
 import {
   oldestGame,
   oldestGame2,
@@ -18,6 +19,7 @@ import {
   kleopatra,
   shark,
 } from "./set1";
+import { Test } from "./entities.canvas";
 
 const board = new Board(sunshine);
 board.mount(".board-slot");
@@ -26,3 +28,6 @@ console.log(board);
 document.querySelector(".burger-icon").addEventListener("click", function () {
   document.querySelector(".home-screen").classList.toggle("hidden");
 });
+
+const testInstance = new Test();
+console.log(testInstance);

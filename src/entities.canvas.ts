@@ -1,8 +1,12 @@
 type Class = new (...args: any[]) => any;
 type Mixin = (superClass: Class) => Class;
 
-const MovableMixin: Mixin = (superClass: Class) => {
-  return class Movable extends superClass {
+class Entity {
+  constructor() {}
+}
+
+const Movable: Mixin = (superClass: Class) => {
+  return class extends superClass {
     constructor(...args: any[]) {
       super(...args);
     }
@@ -11,15 +15,28 @@ const MovableMixin: Mixin = (superClass: Class) => {
   };
 };
 
-const DestroyableMixin: Mixin = (superClass: Class) => {
-  return class Destroyable extends superClass {
+const Openable: Mixin = (superClass: Class) => {
+  return class extends superClass {
     constructor(...args: any[]) {
       super(...args);
     }
 
-    protected destroy() {}
+    protected open() {}
+
+    protected unlock() {}
   };
 };
 
-const pipe = (a: Mixin, b: Mixin) => (superClass: Class) => b(a(superClass));
-const compose = (...mixins: Mixin[]): Mixin => (baseClass: Class) => mixins.reduce(pipe)(baseClass);
+const pipe = (a: Mixin, b: Mixin) => (superClass: Class) => a(b(superClass));
+
+const compose = (...mixins: Mixin[]): Mixin => {
+  return (baseClass: Class) => {
+    return mixins.reduce((a: Mixin, b: Mixin) => (superClass: Class) => a(b(superClass)))(baseClass);
+  };
+};
+
+export class Test extends compose(Movable, Openable)(Entity) {
+  constructor() {
+    super();
+  }
+}
