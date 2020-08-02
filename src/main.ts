@@ -1,5 +1,5 @@
 import "./styles.scss";
-import { Board } from "./board";
+import Board from "./board.canvas";
 
 import {
   oldestGame,
@@ -21,7 +21,11 @@ import {
 } from "./set1";
 import { Test } from "./entities.canvas";
 
-const board = new Board(sunshine);
+const board = new Board(fool);
+board.attach(".board-wrapper");
+console.log(board);
+
+/* const board = new Board(sunshine);
 board.mount(".board-slot");
 console.log(board);
 
@@ -30,4 +34,4 @@ document.querySelector(".burger-icon").addEventListener("click", function () {
 });
 
 const testInstance = new Test();
-console.log(testInstance);
+console.log(testInstance); */

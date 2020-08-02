@@ -16,6 +16,17 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.board-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.canvas {
+  background-color: white;
+  cursor: pointer;
+}
+
 .header {
   position: fixed;
   z-index: 9999;
