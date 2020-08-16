@@ -6,7 +6,7 @@ import * as Puzzles from "./puzzles";
 board.attach(".board-wrapper");
 console.log(board); */
 
-const board = new Board(Puzzles.forgetMeNot);
+const board = new Board(Puzzles.sunshine);
 board.mount(".board-slot");
 console.log(board);
 
