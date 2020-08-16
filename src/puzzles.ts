@@ -1,14 +1,13 @@
 import { BoardConfig } from "./interfaces";
 
-// Oldest Game
 export const daisy: BoardConfig = {
   cols: 10,
   rows: 11,
   target: [
-    { row: 10, col: 9 },
-    { row: 10, col: 10 },
-    { row: 11, col: 9 },
-    { row: 11, col: 10 },
+    { col: 9, row: 10 },
+    { col: 10, row: 10 },
+    { col: 9, row: 11 },
+    { col: 10, row: 11 },
   ],
   master: [
     { row: 4, col: 5 },
