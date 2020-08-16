@@ -39,6 +39,7 @@ export interface Movable {
 }
 
 export interface Destructible {
+  lockState: Map<Cell, boolean>;
   unlocked: boolean;
   unlock: (cell: Cell) => void;
   destroy: (context: CanvasRenderingContext2D, cellSize: number) => void;
