@@ -1,4 +1,4 @@
-import { Cell } from "./models";
+import { Cell } from "./interfaces";
 
 export default class CoverageMatrix {
   private matrix: boolean[][];

@@ -1,4 +1,4 @@
-import { GridCell } from "./models";
+import { Cell } from "./interfaces";
 
 export class BoardMatrix {
   private matrix: boolean[][];
@@ -23,8 +23,8 @@ export class BoardMatrix {
     }
   }
 
-  setValues(cells: GridCell[], value: boolean) {
-    cells.forEach(cell => this.setValue(cell.row, cell.column, value));
+  setValues(cells: Cell[], value: boolean) {
+    cells.forEach(cell => this.setValue(cell.row, cell.col, value));
   }
 
   reset() {

@@ -1,4 +1,4 @@
-import { BoardConfig, GridCell } from "./models";
+import { BoardConfig, Cell } from "./interfaces";
 import { Entity, Block, Wall, Gate, Target } from "./entities";
 import { BoardMatrix } from "./board-matrix";
 import { validateBoard } from "./validity-checker";
@@ -37,13 +37,13 @@ export class Board {
   constructor(config: BoardConfig) {
     validateBoard(config);
     this.rows = config.rows;
-    this.columns = config.columns;
+    this.columns = config.cols;
 
     this.target = this.createEntity(Target, config.target);
-    this.masterBlock = this.createEntity(Block, config.masterBlock, true);
-    if (config.blocks) this.blocks = config.blocks.map(cells => this.createEntity(Block, cells));
+    this.masterBlock = this.createEntity(Block, config.master, true);
+    if (config.movables) this.blocks = config.movables.map(cells => this.createEntity(Block, cells));
     if (config.walls) this.walls = config.walls.map(cells => this.createEntity(Wall, cells));
-    if (config.gates) this.gates = config.gates.map(cells => this.createEntity(Gate, cells));
+    if (config.destructibles) this.gates = config.destructibles.map(cells => this.createEntity(Gate, cells));
 
     this.init();
 
@@ -60,7 +60,7 @@ export class Board {
     return () => counter++;
   })();
 
-  private createEntity(entity: new (...args: any[]) => Entity, cells: GridCell[], ...args: any[]): any {
+  private createEntity(entity: new (...args: any[]) => Entity, cells: Cell[], ...args: any[]): any {
     return new entity(cells, this.generateId(), ...args);
   }
 
@@ -114,15 +114,15 @@ export class Board {
     return block.elements
       .map(element => ({
         row: toZeroBased(element.style.gridRowStart) + (axis === "gridRowStart" ? direction : 0),
-        column: toZeroBased(element.style.gridColumnStart) + (axis === "gridColumnStart" ? direction : 0),
+        col: toZeroBased(element.style.gridColumnStart) + (axis === "gridColumnStart" ? direction : 0),
       }))
       .every(
         cell =>
           cell.row >= 0 &&
           cell.row <= this.rows - 1 &&
-          cell.column >= 0 &&
-          cell.column <= this.columns - 1 &&
-          !this.matrix.getValue(cell.row, cell.column)
+          cell.col >= 0 &&
+          cell.col <= this.columns - 1 &&
+          !this.matrix.getValue(cell.row, cell.col)
       );
   }
 
@@ -147,15 +147,15 @@ export class Board {
   private gateUnlocker() {
     for (const element of this.masterBlock.elements) {
       const row = +element.style.gridRowStart;
-      const column = +element.style.gridColumnStart;
+      const col = +element.style.gridColumnStart;
 
       for (const gate of this.gates) {
         for (const cell of gate.cells) {
           if (
-            (cell.row === row && cell.column === column - 1) ||
-            (cell.row === row && cell.column === column + 1) ||
-            (cell.column === column && cell.row === row - 1) ||
-            (cell.column === column && cell.row === row + 1)
+            (cell.row === row && cell.col === col - 1) ||
+            (cell.row === row && cell.col === col + 1) ||
+            (cell.col === col && cell.row === row - 1) ||
+            (cell.col === col && cell.row === row + 1)
           ) {
             gate.unlockElement(cell);
           }
@@ -168,7 +168,7 @@ export class Board {
     if (this.activeBlock.master) {
       return this.target.cells.every(cell =>
         this.activeBlock.elements.some(
-          element => cell.row === +element.style.gridRowStart && cell.column === +element.style.gridColumnStart
+          element => cell.row === +element.style.gridRowStart && cell.col === +element.style.gridColumnStart
         )
       );
     } else return false;
@@ -178,8 +178,8 @@ export class Board {
     for (const entity of entities) {
       for (const element of entity.elements) {
         const row = toZeroBased(element.style.gridRowStart);
-        const column = toZeroBased(element.style.gridColumnStart);
-        this.matrix.setValue(row, column, value);
+        const col = toZeroBased(element.style.gridColumnStart);
+        this.matrix.setValue(row, col, value);
       }
     }
   }

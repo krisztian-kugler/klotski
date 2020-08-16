@@ -1,4 +1,4 @@
-import { GridCell } from "./models";
+import { Cell } from "./interfaces";
 
 export type EntityType = Block | Target | Wall | Gate;
 
@@ -12,14 +12,14 @@ export interface EntityConfig {
 export class Entity {
   elements: HTMLElement[] = [];
 
-  constructor(public cells: GridCell[], public id: number) {}
+  constructor(public cells: Cell[], public id: number) {}
 
   protected createElements(classList: string[]) {
     for (const cell of this.cells) {
       const element = document.createElement("div");
       element.classList.add("entity", ...classList);
       element.style.gridRowStart = cell.row.toString();
-      element.style.gridColumnStart = cell.column.toString();
+      element.style.gridColumnStart = cell.col.toString();
       element.setAttribute("entity-id", this.id.toString());
 
       /* const core = document.createElement("div");
@@ -40,13 +40,13 @@ const BorderMixin = (superclass: new (...args: any[]) => Entity) =>
     protected addBorder() {
       for (const element of this.elements) {
         const row = +element.style.gridRowStart;
-        const column = +element.style.gridColumnStart;
+        const col = +element.style.gridColumnStart;
         let top, bottom, left, right;
 
-        if (this.cells.find(cell => cell.column === column && cell.row === row - 1)) top = true;
-        if (this.cells.find(cell => cell.column === column && cell.row === row + 1)) bottom = true;
-        if (this.cells.find(cell => cell.row === row && cell.column === column - 1)) left = true;
-        if (this.cells.find(cell => cell.row === row && cell.column === column + 1)) right = true;
+        if (this.cells.find(cell => cell.col === col && cell.row === row - 1)) top = true;
+        if (this.cells.find(cell => cell.col === col && cell.row === row + 1)) bottom = true;
+        if (this.cells.find(cell => cell.row === row && cell.col === col - 1)) left = true;
+        if (this.cells.find(cell => cell.row === row && cell.col === col + 1)) right = true;
 
         if (top && bottom) element.classList.add("edge-top-bottom");
         else if (top) element.classList.add("edge-top");
@@ -60,8 +60,8 @@ const BorderMixin = (superclass: new (...args: any[]) => Entity) =>
 
         if (
           top &&
-          ((left && this.cells.find(cell => cell.row === row - 1 && cell.column === column - 1)) ||
-            (right && this.cells.find(cell => cell.row === row - 1 && cell.column === column + 1)))
+          ((left && this.cells.find(cell => cell.row === row - 1 && cell.col === col - 1)) ||
+            (right && this.cells.find(cell => cell.row === row - 1 && cell.col === col + 1)))
         ) {
           const corner = document.createElement("div");
 
@@ -74,8 +74,8 @@ const BorderMixin = (superclass: new (...args: any[]) => Entity) =>
 
         if (
           bottom &&
-          ((left && this.cells.find(cell => cell.row === row + 1 && cell.column === column - 1)) ||
-            (right && this.cells.find(cell => cell.row === row + 1 && cell.column === column + 1)))
+          ((left && this.cells.find(cell => cell.row === row + 1 && cell.col === col - 1)) ||
+            (right && this.cells.find(cell => cell.row === row + 1 && cell.col === col + 1)))
         ) {
           const corner = document.createElement("div");
 
@@ -103,7 +103,7 @@ const UnlockMixin = (superclass: new (...args: any[]) => Entity) =>
   };
 
 export class Block extends BorderMixin(Entity) {
-  constructor(cells: GridCell[], id: number, public master = false) {
+  constructor(cells: Cell[], id: number, public master = false) {
     super(cells, id);
     let classList = ["block"];
     if (master) classList = ["master-block"];
@@ -116,14 +116,14 @@ export class Block extends BorderMixin(Entity) {
 }
 
 export class Target extends Entity {
-  constructor(cells: GridCell[], id: number) {
+  constructor(cells: Cell[], id: number) {
     super(cells, id);
     this.createElements(["target"]);
   }
 }
 
 export class Wall extends BorderMixin(Entity) {
-  constructor(cells: GridCell[], id: number) {
+  constructor(cells: Cell[], id: number) {
     super(cells, id);
     this.createElements(["wall"]);
     this.addBorder();
@@ -133,15 +133,15 @@ export class Wall extends BorderMixin(Entity) {
 export class Gate extends BorderMixin(Entity) {
   unlocked = false;
 
-  constructor(cells: GridCell[], id: number) {
+  constructor(cells: Cell[], id: number) {
     super(cells, id);
     this.createElements(["gate"]);
     this.addBorder();
   }
 
-  unlockElement(cell: GridCell) {
+  unlockElement(cell: Cell) {
     for (const element of this.elements) {
-      if (+element.style.gridRowStart === cell.row && +element.style.gridColumnStart === cell.column) {
+      if (+element.style.gridRowStart === cell.row && +element.style.gridColumnStart === cell.col) {
         element.classList.add("unlocked");
       }
     }

@@ -1,4 +1,4 @@
-import { Position, Cell, BoardConfig } from "./models";
+import { Position, Cell, BoardConfig } from "./interfaces";
 import CoverageMatrix from "./coverage-matrix";
 
 export default class Board {
@@ -26,7 +26,7 @@ export default class Board {
   }
 
   constructor(config: BoardConfig) {
-    this.cols = config.columns;
+    this.cols = config.cols;
     this.rows = config.rows;
     this.createBoard();
   }

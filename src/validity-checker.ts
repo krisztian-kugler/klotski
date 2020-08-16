@@ -1,4 +1,4 @@
-import { BoardConfig, GridCell } from "./models";
+import { BoardConfig, Cell } from "./interfaces";
 
 const errorStart = "Board validation failed:";
 
@@ -7,11 +7,11 @@ export const validateBoard = (config: BoardConfig) => {
     throw new Error(errorStart + " 'rows' is missing.");
   }
 
-  if (config.columns === undefined) {
-    throw new Error(errorStart + " 'columns' is missing.");
+  if (config.cols === undefined) {
+    throw new Error(errorStart + " 'cols' is missing.");
   }
 
-  if (config.masterBlock === undefined) {
+  if (config.master === undefined) {
     throw new Error(errorStart + " 'targetBlock' is missing.");
   }
 
@@ -23,11 +23,11 @@ export const validateBoard = (config: BoardConfig) => {
     throw new Error(errorStart + " 'rows' must be a positive integer greater than 1.");
   }
 
-  if (typeof config.columns !== "number" || config.columns < 2) {
-    throw new Error(errorStart + " 'columns' must be a positive integer greater than 1.");
+  if (typeof config.cols !== "number" || config.cols < 2) {
+    throw new Error(errorStart + " 'cols' must be a positive integer greater than 1.");
   }
 
-  if (!Array.isArray(config.masterBlock) || !config.masterBlock.length) {
+  if (!Array.isArray(config.master) || !config.master.length) {
     throw new Error(errorStart + " 'targetBlock' must be a non-empty array.");
   }
 
@@ -37,5 +37,5 @@ export const validateBoard = (config: BoardConfig) => {
 
   // Shape of targetBlock and targetZone must be identical (their coverage matrix must be the same)
 
-  const hash: GridCell[] = [];
+  const hash: Cell[] = [];
 };

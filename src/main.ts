@@ -18,7 +18,7 @@ import {
   solomon,
   kleopatra,
   shark,
-} from "./set1";
+} from "./puzzles";
 import { Test } from "./entities.canvas";
 
 const board = new Board(fool);
