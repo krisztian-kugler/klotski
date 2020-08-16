@@ -23,16 +23,16 @@ export default class CoverageMatrix {
     }
   }
 
+  setValues(cells: Cell[], value: boolean) {
+    cells.forEach(cell => this.setValue(cell.col, cell.row, value));
+  }
+
   isAccessible(cells: Cell[]): boolean {
-    return cells.every(cell => this.getValue(cell.col, cell.row));
+    return cells.every(cell => this.isWithinBounds(cell.col, cell.row) && this.matrix[cell.row][cell.col]);
   }
 
   reset() {
-    for (const row of this.matrix) {
-      for (let col of row) {
-        col = true;
-      }
-    }
+    this.matrix.forEach(row => row.forEach(col => (col = true)));
   }
 
   private isWithinBounds(col: number, row: number): boolean {
