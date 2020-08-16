@@ -1,9 +1,9 @@
 import { BoardConfig } from "./interfaces";
 
 // Oldest Game
-export const oldestGame: BoardConfig = {
-  rows: 11,
+export const daisy: BoardConfig = {
   cols: 10,
+  rows: 11,
   target: [
     { row: 10, col: 9 },
     { row: 10, col: 10 },
@@ -68,7 +68,7 @@ export const oldestGame: BoardConfig = {
   ],
 };
 
-export const oldestGame2: BoardConfig = {
+export const violet: BoardConfig = {
   rows: 11,
   cols: 10,
   target: [
@@ -137,7 +137,7 @@ export const oldestGame2: BoardConfig = {
   ],
 };
 
-export const oldestGame3: BoardConfig = {
+export const poppy: BoardConfig = {
   rows: 11,
   cols: 10,
   target: [
@@ -206,7 +206,7 @@ export const oldestGame3: BoardConfig = {
   ],
 };
 
-export const oldestGame4: BoardConfig = {
+export const pansy: BoardConfig = {
   rows: 11,
   cols: 10,
   target: [
@@ -277,7 +277,7 @@ export const oldestGame4: BoardConfig = {
   ],
 };
 
-export const oldestGame5: BoardConfig = {
+export const snowdrop: BoardConfig = {
   rows: 11,
   cols: 10,
   target: [
@@ -348,7 +348,7 @@ export const oldestGame5: BoardConfig = {
   ],
 };
 
-export const oldestGame6: BoardConfig = {
+export const forgetMeNot: BoardConfig = {
   rows: 11,
   cols: 10,
   target: [

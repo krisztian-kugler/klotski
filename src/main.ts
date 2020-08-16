@@ -1,31 +1,14 @@
 import "./styles.scss";
-import Board from "./board.canvas";
+import { Board } from "./old.board";
 
-import {
-  oldestGame,
-  oldestGame2,
-  oldestGame3,
-  oldestGame4,
-  oldestGame5,
-  oldestGame6,
-  agatka,
-  doggie,
-  success,
-  bone,
-  fortune,
-  sunshine,
-  fool,
-  solomon,
-  kleopatra,
-  shark,
-} from "./puzzles";
+import * as Puzzles from "./puzzles";
 import { Test } from "./entities.canvas";
 
-const board = new Board(fool);
+/* const board = new Board(fool);
 board.attach(".board-wrapper");
-console.log(board);
+console.log(board); */
 
-/* const board = new Board(sunshine);
+const board = new Board(Puzzles.forgetMeNot);
 board.mount(".board-slot");
 console.log(board);
 
@@ -34,4 +17,4 @@ document.querySelector(".burger-icon").addEventListener("click", function () {
 });
 
 const testInstance = new Test();
-console.log(testInstance); */
+console.log(testInstance);

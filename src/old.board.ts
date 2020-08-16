@@ -1,6 +1,6 @@
 import { BoardConfig, Cell } from "./interfaces";
-import { Entity, Block, Wall, Gate, Target } from "./entities";
-import { BoardMatrix } from "./board-matrix";
+import { Entity, Block, Wall, Gate, Target } from "./old.entities";
+import { BoardMatrix } from "./old.board-matrix";
 import { validateBoard } from "./validity-checker";
 import { toZeroBased } from "./utils";
 
