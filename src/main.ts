@@ -2,7 +2,7 @@ import "./styles.scss";
 import { Board } from "./old.board";
 
 import * as Puzzles from "./puzzles";
-import { Test } from "./entities.canvas";
+import { Test } from "./entities";
 
 /* const board = new Board(fool);
 board.attach(".board-wrapper");
