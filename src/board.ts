@@ -10,7 +10,6 @@ export default class Board {
   cols: number;
   rows: number;
   cellSize = 30;
-  moveCount = 0;
   target: Target;
   master: MovableBlock;
   movables: MovableBlock[] = [];
@@ -20,7 +19,9 @@ export default class Board {
   private cellFromPoint: Cell; // Cell at the current pointer position
   private activeBlock: MovableBlock; // The block that's currently being dragged
   private activeCell: Cell; // The cell of the active block at the current pointer position
+  private activeBlockMoved = false;
   private _dragging = false;
+  private _moveCount = 0;
 
   set dragging(value: boolean) {
     this._dragging = value;
@@ -31,13 +32,24 @@ export default class Board {
     return this._dragging;
   }
 
-  constructor(config: BoardConfig) {
+  set moveCount(value: number) {
+    this._moveCount = value;
+    if (this.moveCountDisplay) this.moveCountDisplay.innerText = this.moveCount.toString();
+  }
+
+  get moveCount(): number {
+    return this._moveCount;
+  }
+
+  constructor(config: BoardConfig, private moveCountDisplay?: HTMLElement, private nameDisplay?: HTMLElement) {
+    if (this.nameDisplay) this.nameDisplay.innerText = "Puzzle name";
     this.cols = config.cols;
     this.rows = config.rows;
+    this.moveCount = 0;
     this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     this.createBoard();
     this.createEntities(config);
-    this.setupCoverage();
+    this.setupCoverageMatrix();
     this.renderEntities();
   }
 
@@ -64,7 +76,7 @@ export default class Board {
     this.moveCount = 0;
     this.coverageMatrix.reset();
     [this.master, ...this.movables, ...this.destructibles].forEach(block => block.reset());
-    this.setupCoverage();
+    this.setupCoverageMatrix();
     this.renderEntities();
   }
 
@@ -84,7 +96,7 @@ export default class Board {
     this.walls = config.walls?.map(cells => new Block(cells));
   }
 
-  private setupCoverage() {
+  private setupCoverageMatrix() {
     [this.master, ...this.movables, ...this.destructibles, ...this.walls].forEach(block => {
       this.coverageMatrix.setValues(block.cells, false);
     });
@@ -168,6 +180,11 @@ export default class Board {
               this.activeBlock.master ? Colors.MASTER : Colors.MOVABLE
             );
             this.activeCell = { ...this.cellFromPoint };
+
+            if (!this.activeBlockMoved) {
+              this.moveCount++;
+              this.activeBlockMoved = true;
+            }
           } else if (this.activeBlock.contains(this.cellFromPoint)) {
             this.activeCell = { ...this.cellFromPoint };
           } else {
@@ -183,6 +200,7 @@ export default class Board {
       this.dragging = false;
       this.coverageMatrix.setValues(this.activeBlock.cells, false);
       this.activeBlock = this.activeCell = null;
+      this.activeBlockMoved = false;
     }
   };
 }

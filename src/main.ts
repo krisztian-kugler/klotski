@@ -7,11 +7,11 @@ const oldBoard = new OldBoard(Puzzles.forgetMeNot);
 oldBoard.mount(".board-slot");
 console.log(oldBoard);
 
-const board = new Board(Puzzles.forgetMeNot);
+const board = new Board(Puzzles.forgetMeNot, document.querySelector(".version"), document.querySelector(".logo"));
 board.attach(".board-slot");
 console.log(board);
 
-document.querySelector(".burger-icon").addEventListener("click", function () {
+document.querySelector(".header").addEventListener("click", function () {
   document.querySelector(".home-screen").classList.toggle("hidden");
 });
 

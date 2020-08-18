@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
 
 * {
   padding: 0;
@@ -14,7 +16,7 @@ body {
   background-color: #425669;
   background-color: #52616f;
   background-color: #607d8b;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .board-wrapper {
@@ -41,6 +43,7 @@ body {
   align-items: center;
   padding: 0 2rem;
   color: white;
+  background-color: #263544;
 
   .burger-icon {
     justify-self: left;
@@ -91,6 +94,7 @@ body {
 
 .set-list {
   display: flex;
+  margin-bottom: 1rem;
   list-style: none;
 
   .set-item {
@@ -99,15 +103,16 @@ body {
     height: 2.5rem;
     padding: 0 1rem;
     background-color: transparent;
-    color: #67b2ff;
-    font-family: "Montserrat";
+    color: #3193a7;
+    font-family: "Open Sans";
     font-size: 1rem;
+    font-weight: 600;
     transition: background-color 150ms;
     cursor: pointer;
 
     &.active {
       border-radius: 0.25rem;
-      background-color: #3d81c7;
+      background-color: #3193a7;
       color: white;
     }
   }
@@ -123,6 +128,8 @@ body {
 
   .preview {
     background-color: rgba(255, 255, 255, 0.25);
+    background-color: #607d8b;
+    cursor: pointer;
   }
 }
 
