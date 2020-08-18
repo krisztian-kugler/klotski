@@ -24,7 +24,8 @@ body {
 }
 
 .canvas {
-  background-color: white;
+  padding: 0.125rem;
+  background-color: rgb(38, 53, 68);
   cursor: pointer;
 }
 
@@ -142,8 +143,10 @@ body {
 }
 
 .board-slot {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
   justify-content: center;
+  column-gap: 1rem;
 }
 
 .board {

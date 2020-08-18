@@ -19,7 +19,7 @@ export class Target extends Entity implements Render {
 }
 
 export class Block extends Entity implements Render {
-  private borders = new Map<Cell, BorderDescriptor>();
+  protected borders = new Map<Cell, BorderDescriptor>();
 
   constructor(cells: Cell[]) {
     super(cells);
@@ -47,7 +47,7 @@ export class Block extends Entity implements Render {
     });
   }
 
-  private setBorders() {
+  protected setBorders() {
     this.cells.forEach(cell => {
       const top = !!this.cells.find(c => c.col === cell.col && c.row === cell.row - 1);
       const bottom = !!this.cells.find(c => c.col === cell.col && c.row === cell.row + 1);
@@ -67,7 +67,7 @@ export class MovableBlock extends Block implements Movable {
 
   constructor(cells: Cell[], public master = false) {
     super(cells);
-    this.cloneCells(this.startCells, this.cells);
+    this.startCells = this.cloneCells(this.cells);
   }
 
   move(axis: Axis, direction: Direction) {
@@ -75,11 +75,13 @@ export class MovableBlock extends Block implements Movable {
   }
 
   reset() {
-    this.cloneCells(this.cells, this.startCells);
+    this.cells = this.cloneCells(this.startCells);
+    this.borders.clear();
+    this.setBorders();
   }
 
-  private cloneCells(target: Cell[], source: Cell[]) {
-    target = source.map(cell => ({ ...cell }));
+  private cloneCells(source: Cell[]) {
+    return source.map(cell => ({ ...cell }));
   }
 }
 
@@ -99,5 +101,10 @@ export class DestructibleBlock extends Block implements Destructible {
 
   destroy(context: CanvasRenderingContext2D, cellSize: number) {
     this.cells.forEach(cell => context.clearRect(cell.col * cellSize, cell.row * cellSize, cellSize, cellSize));
+  }
+
+  reset() {
+    this.unlocked = false;
+    this.lockState.forEach(value => (value = false));
   }
 }

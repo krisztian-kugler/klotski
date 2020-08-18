@@ -8,7 +8,7 @@ const unit = 30;
 
 type GridAxis = "gridRowStart" | "gridColumnStart";
 
-export class Board {
+export class OldBoard {
   element: HTMLDivElement;
   matrix: BoardMatrix;
   moveCount = 0;

@@ -32,7 +32,11 @@ export default class CoverageMatrix {
   }
 
   reset() {
-    this.matrix.forEach(row => row.forEach(col => (col = true)));
+    for (let row = 0; row < this.matrix.length; row++) {
+      for (let col = 0; col < this.matrix[row].length; col++) {
+        this.matrix[row][col] = true;
+      }
+    }
   }
 
   private isWithinBounds(col: number, row: number): boolean {

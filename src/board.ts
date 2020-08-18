@@ -13,9 +13,9 @@ export default class Board {
   moveCount = 0;
   target: Target;
   master: MovableBlock;
-  movables: MovableBlock[];
-  destructibles: DestructibleBlock[];
-  walls: Block[];
+  movables: MovableBlock[] = [];
+  destructibles: DestructibleBlock[] = [];
+  walls: Block[] = [];
 
   private cellFromPoint: Cell; // Cell at the current pointer position
   private activeBlock: MovableBlock; // The block that's currently being dragged
@@ -36,6 +36,9 @@ export default class Board {
     this.rows = config.rows;
     this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     this.createBoard();
+    this.createEntities(config);
+    this.setupCoverage();
+    this.renderEntities();
   }
 
   attach(selector: string) {
@@ -54,13 +57,15 @@ export default class Board {
     this.cellSize = cellSize;
     this.canvas.width = this.cols * this.cellSize;
     this.canvas.height = this.rows * this.cellSize;
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.renderEntities();
   }
 
   reset() {
     this.moveCount = 0;
     this.coverageMatrix.reset();
+    [this.master, ...this.movables, ...this.destructibles].forEach(block => block.reset());
+    this.setupCoverage();
+    this.renderEntities();
   }
 
   private createBoard() {
@@ -79,7 +84,14 @@ export default class Board {
     this.walls = config.walls?.map(cells => new Block(cells));
   }
 
+  private setupCoverage() {
+    [this.master, ...this.movables, ...this.destructibles, ...this.walls].forEach(block => {
+      this.coverageMatrix.setValues(block.cells, false);
+    });
+  }
+
   private renderEntities() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.target.render(this.context, this.cellSize, Colors.TARGET);
     this.master.render(this.context, this.cellSize, Colors.MASTER);
     this.movables.forEach(movable => movable.render(this.context, this.cellSize, Colors.MOVABLE));

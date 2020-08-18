@@ -43,6 +43,7 @@ export interface Destructible {
   unlocked: boolean;
   unlock: (cell: Cell) => void;
   destroy: (context: CanvasRenderingContext2D, cellSize: number) => void;
+  reset: () => void;
 }
 
 export interface BorderDescriptor {
