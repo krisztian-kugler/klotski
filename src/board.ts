@@ -17,9 +17,9 @@ export default class Board {
   destructibles: DestructibleBlock[];
   walls: Block[];
 
-  private hoveredCell: Cell;
-  private activeCell: Cell;
-  private activeBlock: MovableBlock;
+  private cellFromPoint: Cell; // Cell at the current pointer position
+  private activeBlock: MovableBlock; // The block that's currently being dragged
+  private activeCell: Cell; // The cell of the active block at the current pointer position
   private _dragging = false;
 
   set dragging(value: boolean) {
@@ -108,12 +108,12 @@ export default class Board {
 
   private onPointerDown = (event: PointerEvent) => {
     event.preventDefault();
-    this.hoveredCell = this.getCell(this.getPosition(event));
-    const block = this.getBlock(this.hoveredCell);
+    this.cellFromPoint = this.getCell(this.getPosition(event));
+    const block = this.getBlock(this.cellFromPoint);
 
     if (block instanceof MovableBlock) {
       this.dragging = true;
-      this.activeCell = { ...this.hoveredCell };
+      this.activeCell = { ...this.cellFromPoint };
       this.activeBlock = block;
       this.coverageMatrix.setValues(this.activeBlock.cells, true);
     }
@@ -127,19 +127,20 @@ export default class Board {
   private onPointerMove = (event: PointerEvent) => {
     if (this.dragging) {
       const cell = this.getCell(this.getPosition(event));
-      const isDifferentCell = Object.keys(cell).some((key: "col" | "row") => cell[key] !== this.hoveredCell[key]);
 
-      if (isDifferentCell) {
-        this.hoveredCell = { ...cell };
+      if (cell.col !== this.cellFromPoint.col || cell.row !== this.cellFromPoint.row) {
+        this.cellFromPoint = { ...cell };
 
-        if (!this.activeCell && this.activeBlock.contains(this.hoveredCell)) this.activeCell = { ...this.hoveredCell };
+        if (!this.activeCell && this.activeBlock.contains(this.cellFromPoint)) {
+          this.activeCell = { ...this.cellFromPoint };
+        }
 
         if (
           this.activeCell &&
-          (this.activeCell.col !== this.hoveredCell.col || this.activeCell.row !== this.hoveredCell.row)
+          (this.activeCell.col !== this.cellFromPoint.col || this.activeCell.row !== this.cellFromPoint.row)
         ) {
-          const axis = this.hoveredCell.col !== this.activeCell.col ? Axis.COL : Axis.ROW;
-          const direction = this.hoveredCell[axis] > this.activeCell[axis] ? Direction.UP : Direction.DOWN;
+          const axis = this.cellFromPoint.col !== this.activeCell.col ? Axis.COL : Axis.ROW;
+          const direction = this.cellFromPoint[axis] > this.activeCell[axis] ? Direction.UP : Direction.DOWN;
           const canMove = this.coverageMatrix.isAccessible(
             this.activeBlock.cells.map(cell => ({ ...cell, [axis]: cell[axis] + direction }))
           );
@@ -149,10 +150,17 @@ export default class Board {
               this.context.clearRect(c.col * this.cellSize, c.row * this.cellSize, this.cellSize, this.cellSize);
             });
             this.activeBlock.move(axis, direction);
-            this.activeBlock.render(this.context, this.cellSize, this.activeBlock.master ? Colors.MASTER : "#f7d156");
-            this.activeCell = { ...this.hoveredCell };
-          } else if (this.activeBlock.contains(this.hoveredCell)) this.activeCell = { ...this.hoveredCell };
-          else this.activeCell = null;
+            this.activeBlock.render(
+              this.context,
+              this.cellSize,
+              this.activeBlock.master ? Colors.MASTER : Colors.MOVABLE
+            );
+            this.activeCell = { ...this.cellFromPoint };
+          } else if (this.activeBlock.contains(this.cellFromPoint)) {
+            this.activeCell = { ...this.cellFromPoint };
+          } else {
+            this.activeCell = null;
+          }
         }
       }
     }
