@@ -1,4 +1,4 @@
-import { Position, Cell, BoardConfig } from "./interfaces";
+import { Position, Cell, BoardConfig, DisplayElements } from "./interfaces";
 import { Colors, Axis, Direction } from "./enums";
 import { Target, Block, MovableBlock, DestructibleBlock } from "./entities";
 import CoverageMatrix from "./coverage-matrix";
@@ -34,15 +34,15 @@ export default class Board {
 
   set moveCount(value: number) {
     this._moveCount = value;
-    if (this.moveCountDisplay) this.moveCountDisplay.innerText = this.moveCount.toString();
+    if (this.displayElements?.moveCount) this.displayElements.moveCount.innerText = this.moveCount.toString();
   }
 
   get moveCount(): number {
     return this._moveCount;
   }
 
-  constructor(config: BoardConfig, private moveCountDisplay?: HTMLElement, private nameDisplay?: HTMLElement) {
-    if (this.nameDisplay) this.nameDisplay.innerText = "Puzzle name";
+  constructor(config: BoardConfig, private displayElements?: DisplayElements) {
+    if (this.displayElements?.name) this.displayElements.name.innerText = "Puzzle name";
     this.cols = config.cols;
     this.rows = config.rows;
     this.moveCount = 0;

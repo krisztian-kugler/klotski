@@ -22,6 +22,12 @@ export interface BoardConfig {
   destructibles?: Cell[][];
 }
 
+export interface DisplayElements {
+  canvas?: HTMLCanvasElement;
+  name?: HTMLElement;
+  moveCount?: HTMLElement;
+}
+
 export interface Puzzle {
   name: string;
   difficulty: Difficulty;
