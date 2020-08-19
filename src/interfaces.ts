@@ -23,7 +23,7 @@ export interface BoardConfig {
 }
 
 export interface DisplayElements {
-  canvas?: HTMLCanvasElement;
+  host?: HTMLElement;
   name?: HTMLElement;
   moveCount?: HTMLElement;
 }

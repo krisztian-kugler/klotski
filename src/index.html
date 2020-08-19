@@ -6,7 +6,6 @@
     <title>Klotski</title>
   </head>
   <body>
-    <div class="board-wrapper"></div>
     <header class="header">
       <div class="burger-icon">
         <span class="line"></span>
@@ -19,10 +18,10 @@
         <button class="reset">Reset</button>
       </div>
     </header>
-    <div class="home-screen">
+
+    <section class="home-screen">
       <div>
-        Continue where you left off (preview image of last position) or select a new challenge! Options: flashing
-        target, dark theme / light theme
+        Continue where you left off (preview image of last position) or select a new challenge!
       </div>
       <section class="sets">
         <li class="set-list">
@@ -36,7 +35,7 @@
             Expert
           </ul>
         </li>
-        <div class="set">
+        <div class="set set-content">
           <div class="preview"></div>
           <div class="preview"></div>
           <div class="preview"></div>
@@ -47,11 +46,10 @@
           <div class="preview"></div>
         </div>
       </section>
-    </div>
-    <main class="main">
-      <div class="board-slot">
-        <canvas></canvas>
-      </div>
-    </main>
+    </section>
+
+    <section class="main">
+      <div class="board-container"></div>
+    </section>
   </body>
 </html>
