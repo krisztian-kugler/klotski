@@ -4,7 +4,7 @@ import Board from "./board";
 import * as Puzzles from "./puzzles";
 
 abstract class Klotski {
-  static sets: any;
+  static sets: any[];
 
   static async init() {
     const sets = await this.loadPuzzles("boards.json");
@@ -19,11 +19,35 @@ abstract class Klotski {
     }
   }
 
-  static loadPuzzles(url: string) {
+  static loadPuzzles(url: string): Promise<any> {
     return fetch(url)
-      .then(data => data.json())
+      .then(response => response.json())
       .then(sets => (this.sets = sets))
       .catch(console.log);
+  }
+
+  static renderPreviews() {
+    this.sets.forEach((set: any[]) => {
+      const setContainer = document.createElement("div");
+
+      set.forEach((board: any) => {
+        const canvas = document.createElement("canvas");
+      });
+    });
+
+    const template = `
+      <div class="set-container">
+        ${this.sets.map((set: any[]) => {
+          return `
+            <div>
+              ${set.map((board: any) => {
+                return `<klotski-canvas width=${board.cols} height=${board.rows}></klotski-canvas>`;
+              })}
+            </div>
+          `;
+        })}
+      </div>
+    `;
   }
 }
 
