@@ -9,7 +9,7 @@ export default class Board {
   coverageMatrix: CoverageMatrix;
   cols: number;
   rows: number;
-  cellSize = 30;
+  cellSize = 15;
   target: Target;
   master: MovableBlock;
   movables: MovableBlock[] = [];

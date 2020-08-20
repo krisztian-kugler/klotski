@@ -5,6 +5,31 @@ import * as Puzzles from "./puzzles";
 import { BoardConfig } from "./interfaces";
 import BoardPreview from "./board-preview";
 
+const boardContainer: HTMLElement = document.querySelector(".board-container");
+const puzzleTitle: HTMLElement = document.querySelector(".puzzle-name");
+const moveCount: HTMLElement = document.querySelector(".move-count");
+
+const oldBoard = new OldBoard(Puzzles.daisy);
+oldBoard.mount(".board-container");
+console.log(oldBoard);
+
+const board = new Board(Puzzles.daisy, {
+  host: boardContainer,
+  name: puzzleTitle,
+  moveCount: moveCount,
+});
+board.attach(".board-container");
+console.log(board);
+
+document.querySelector(".header").addEventListener("click", function () {
+  document.querySelector(".home-screen").classList.toggle("hidden");
+});
+
+document.querySelector(".reset").addEventListener("click", (event: PointerEvent) => {
+  event.stopPropagation();
+  board.reset();
+});
+
 abstract class Klotski {
   static sets: any;
 
@@ -30,6 +55,20 @@ abstract class Klotski {
 
   static renderPreviews() {
     this.sets["level 1"].forEach((board: BoardConfig) => {
+      const container = document.createElement("div");
+      container.classList.add("board-thumbnail");
+      container.innerHTML = `
+          <div class="preview"></div>
+          <div class="board-name">${board.name}</div>
+      `;
+      document.querySelector(".set-content").insertAdjacentElement("beforeend", container);
+
+      const b = new Board(Puzzles.daisy, {
+        host: boardContainer,
+        name: puzzleTitle,
+        moveCount: moveCount,
+      });
+      if (!document.querySelector(".preview").innerHTML) b.attach(".preview");
       const boardPreview = new BoardPreview(board);
       console.log(boardPreview);
     });
@@ -49,30 +88,5 @@ abstract class Klotski {
     `; */
   }
 }
-
-const boardContainer: HTMLElement = document.querySelector(".board-container");
-const puzzleTitle: HTMLElement = document.querySelector(".puzzle-name");
-const moveCount: HTMLElement = document.querySelector(".move-count");
-
-const oldBoard = new OldBoard(Puzzles.daisy);
-oldBoard.mount(".board-container");
-console.log(oldBoard);
-
-const board = new Board(Puzzles.daisy, {
-  host: boardContainer,
-  name: puzzleTitle,
-  moveCount: moveCount,
-});
-board.attach(".board-container");
-console.log(board);
-
-document.querySelector(".header").addEventListener("click", function () {
-  document.querySelector(".home-screen").classList.toggle("hidden");
-});
-
-document.querySelector(".reset").addEventListener("click", (event: PointerEvent) => {
-  event.stopPropagation();
-  board.reset();
-});
 
 Klotski.init();
