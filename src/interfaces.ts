@@ -13,6 +13,7 @@ export interface Cell {
 }
 
 export interface BoardConfig {
+  name?: string;
   cols: number;
   rows: number;
   target: Cell[];

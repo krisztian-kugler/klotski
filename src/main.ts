@@ -2,13 +2,14 @@ import "./styles.scss";
 import { OldBoard } from "./old.board";
 import Board from "./board";
 import * as Puzzles from "./puzzles";
+import { BoardConfig } from "./interfaces";
+import BoardPreview from "./board-preview";
 
 abstract class Klotski {
-  static sets: any[];
+  static sets: any;
 
   static async init() {
-    const sets = await this.loadPuzzles("boards.json");
-    console.log(sets);
+    this.sets = await this.loadPuzzles("boards.json");
 
     const save = localStorage.getItem("klotski-save");
 
@@ -17,25 +18,23 @@ abstract class Klotski {
     } else {
       // show welcome message
     }
+
+    this.renderPreviews();
   }
 
   static loadPuzzles(url: string): Promise<any> {
     return fetch(url)
       .then(response => response.json())
-      .then(sets => (this.sets = sets))
       .catch(console.log);
   }
 
   static renderPreviews() {
-    this.sets.forEach((set: any[]) => {
-      const setContainer = document.createElement("div");
-
-      set.forEach((board: any) => {
-        const canvas = document.createElement("canvas");
-      });
+    this.sets["level 1"].forEach((board: BoardConfig) => {
+      const boardPreview = new BoardPreview(board);
+      console.log(boardPreview);
     });
 
-    const template = `
+    /* const template = `
       <div class="set-container">
         ${this.sets.map((set: any[]) => {
           return `
@@ -47,7 +46,7 @@ abstract class Klotski {
           `;
         })}
       </div>
-    `;
+    `; */
   }
 }
 
