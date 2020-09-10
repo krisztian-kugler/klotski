@@ -9,7 +9,7 @@ export default class Board {
   coverageMatrix: CoverageMatrix;
   cols: number;
   rows: number;
-  cellSize = 15;
+  cellSize = 30;
   target: Target;
   master: MovableBlock;
   movables: MovableBlock[] = [];
@@ -45,7 +45,7 @@ export default class Board {
     if (this.displayElements?.name) this.displayElements.name.innerText = "Puzzle name";
     this.cols = config.cols;
     this.rows = config.rows;
-    this.moveCount = 0;
+    // this.moveCount = 0;
     this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     this.createBoard();
     this.createEntities(config);

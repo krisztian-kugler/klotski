@@ -24,6 +24,7 @@ export interface BoardConfig {
 }
 
 export interface DisplayElements {
+  puzzle?: BoardConfig;
   host?: HTMLElement;
   name?: HTMLElement;
   moveCount?: HTMLElement;

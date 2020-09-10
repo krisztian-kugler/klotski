@@ -6,7 +6,7 @@ import { BoardConfig } from "./interfaces";
 import BoardPreview from "./board-preview";
 
 const boardContainer: HTMLElement = document.querySelector(".board-container");
-const puzzleTitle: HTMLElement = document.querySelector(".puzzle-name");
+const puzzleName: HTMLElement = document.querySelector(".puzzle-name");
 const moveCount: HTMLElement = document.querySelector(".move-count");
 
 const oldBoard = new OldBoard(Puzzles.daisy);
@@ -15,7 +15,7 @@ console.log(oldBoard);
 
 const board = new Board(Puzzles.daisy, {
   host: boardContainer,
-  name: puzzleTitle,
+  name: puzzleName,
   moveCount: moveCount,
 });
 board.attach(".board-container");
@@ -65,7 +65,7 @@ abstract class Klotski {
 
       const b = new Board(Puzzles.daisy, {
         host: boardContainer,
-        name: puzzleTitle,
+        name: puzzleName,
         moveCount: moveCount,
       });
       if (!document.querySelector(".preview").innerHTML) b.attach(".preview");
