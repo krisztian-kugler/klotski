@@ -12,7 +12,7 @@ export interface Cell {
   row: number;
 }
 
-export interface BoardConfig {
+export interface Puzzle {
   name?: string;
   cols: number;
   rows: number;
@@ -23,17 +23,10 @@ export interface BoardConfig {
   destructibles?: Cell[][];
 }
 
-export interface DisplayElements {
-  puzzle?: BoardConfig;
+export interface DisplayConfig {
   host?: HTMLElement;
   name?: HTMLElement;
   moveCount?: HTMLElement;
-}
-
-export interface Puzzle {
-  name: string;
-  difficulty: Difficulty;
-  config: BoardConfig;
 }
 
 export interface Render {

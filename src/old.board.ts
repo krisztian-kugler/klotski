@@ -1,4 +1,4 @@
-import { BoardConfig, Cell } from "./interfaces";
+import { Puzzle, Cell } from "./interfaces";
 import { Entity, Block, Wall, Gate, Target } from "./old.entities";
 import { BoardMatrix } from "./old.board-matrix";
 import { validateBoard } from "./validity-checker";
@@ -34,7 +34,7 @@ export class OldBoard {
     return this._dragging;
   }
 
-  constructor(config: BoardConfig) {
+  constructor(config: Puzzle) {
     validateBoard(config);
     this.rows = config.rows;
     this.columns = config.cols;

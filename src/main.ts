@@ -2,7 +2,7 @@ import "./styles.scss";
 import { OldBoard } from "./old.board";
 import Board from "./board";
 import * as Puzzles from "./puzzles";
-import { BoardConfig } from "./interfaces";
+import { Puzzle } from "./interfaces";
 import BoardPreview from "./board-preview";
 
 const boardContainer: HTMLElement = document.querySelector(".board-container");
@@ -54,7 +54,7 @@ abstract class Klotski {
   }
 
   static renderPreviews() {
-    this.sets["level 1"].forEach((board: BoardConfig) => {
+    this.sets["level 1"].forEach((board: Puzzle) => {
       const container = document.createElement("div");
       container.classList.add("board-thumbnail");
       container.innerHTML = `

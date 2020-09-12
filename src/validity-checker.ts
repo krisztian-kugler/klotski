@@ -1,8 +1,8 @@
-import { BoardConfig, Cell } from "./interfaces";
+import { Puzzle, Cell } from "./interfaces";
 
 const errorStart = "Board validation failed:";
 
-export const validateBoard = (config: BoardConfig) => {
+export const validateBoard = (config: Puzzle) => {
   if (config.rows === undefined) {
     throw new Error(errorStart + " 'rows' is missing.");
   }

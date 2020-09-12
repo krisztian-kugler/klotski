@@ -1,4 +1,4 @@
-import { BoardConfig } from "./interfaces";
+import { Puzzle } from "./interfaces";
 import { Target, Block } from "./entities";
 
 export default class BoardPreview {
@@ -13,5 +13,5 @@ export default class BoardPreview {
   destructibles: Block[];
   walls: Block[];
 
-  constructor(config: BoardConfig) {}
+  constructor(config: Puzzle) {}
 }

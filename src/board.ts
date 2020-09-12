@@ -1,4 +1,4 @@
-import { Position, Cell, BoardConfig, DisplayElements } from "./interfaces";
+import { Position, Cell, Puzzle, DisplayConfig } from "./interfaces";
 import { Colors, Axis, Direction } from "./enums";
 import { Target, Block, MovableBlock, DestructibleBlock } from "./entities";
 import CoverageMatrix from "./coverage-matrix";
@@ -34,21 +34,21 @@ export default class Board {
 
   set moveCount(value: number) {
     this._moveCount = value;
-    if (this.displayElements?.moveCount) this.displayElements.moveCount.innerText = this.moveCount.toString();
+    if (this.displayConfig?.moveCount) this.displayConfig.moveCount.innerText = this.moveCount.toString();
   }
 
   get moveCount(): number {
     return this._moveCount;
   }
 
-  constructor(config: BoardConfig, private displayElements?: DisplayElements) {
-    if (this.displayElements?.name) this.displayElements.name.innerText = "Puzzle name";
-    this.cols = config.cols;
-    this.rows = config.rows;
+  constructor(puzzle: Puzzle, private displayConfig?: DisplayConfig) {
+    if (this.displayConfig?.name) this.displayConfig.name.innerText = "Puzzle name";
+    this.cols = puzzle.cols;
+    this.rows = puzzle.rows;
     // this.moveCount = 0;
     this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     this.createBoard();
-    this.createEntities(config);
+    this.createEntities(puzzle);
     this.setupCoverageMatrix();
     this.renderEntities();
   }
@@ -88,12 +88,12 @@ export default class Board {
     this.context = this.canvas.getContext("2d");
   }
 
-  private createEntities(config: BoardConfig) {
-    this.target = new Target(config.target);
-    this.master = new MovableBlock(config.master, true);
-    this.movables = config.movables?.map(cells => new MovableBlock(cells));
-    this.destructibles = config.destructibles?.map(cells => new DestructibleBlock(cells));
-    this.walls = config.walls?.map(cells => new Block(cells));
+  private createEntities(puzzle: Puzzle) {
+    this.target = new Target(puzzle.target);
+    this.master = new MovableBlock(puzzle.master, true);
+    this.movables = puzzle.movables?.map(cells => new MovableBlock(cells));
+    this.destructibles = puzzle.destructibles?.map(cells => new DestructibleBlock(cells));
+    this.walls = puzzle.walls?.map(cells => new Block(cells));
   }
 
   private setupCoverageMatrix() {

@@ -1,6 +1,6 @@
-import { BoardConfig } from "./interfaces";
+import { Puzzle } from "./interfaces";
 
-export const daisy: BoardConfig = {
+export const daisy: Puzzle = {
   cols: 10,
   rows: 11,
   target: [
@@ -67,7 +67,7 @@ export const daisy: BoardConfig = {
   ],
 };
 
-export const violet: BoardConfig = {
+export const violet: Puzzle = {
   rows: 11,
   cols: 10,
   target: [
@@ -136,7 +136,7 @@ export const violet: BoardConfig = {
   ],
 };
 
-export const poppy: BoardConfig = {
+export const poppy: Puzzle = {
   rows: 11,
   cols: 10,
   target: [
@@ -205,7 +205,7 @@ export const poppy: BoardConfig = {
   ],
 };
 
-export const pansy: BoardConfig = {
+export const pansy: Puzzle = {
   rows: 11,
   cols: 10,
   target: [
@@ -276,7 +276,7 @@ export const pansy: BoardConfig = {
   ],
 };
 
-export const snowdrop: BoardConfig = {
+export const snowdrop: Puzzle = {
   rows: 11,
   cols: 10,
   target: [
@@ -347,7 +347,7 @@ export const snowdrop: BoardConfig = {
   ],
 };
 
-export const forgetMeNot: BoardConfig = {
+export const forgetMeNot: Puzzle = {
   rows: 11,
   cols: 10,
   target: [
@@ -420,7 +420,7 @@ export const forgetMeNot: BoardConfig = {
   ],
 };
 
-export const agatka: BoardConfig = {
+export const agatka: Puzzle = {
   rows: 9,
   cols: 11,
   target: [
@@ -529,7 +529,7 @@ export const agatka: BoardConfig = {
   ],
 };
 
-export const doggie: BoardConfig = {
+export const doggie: Puzzle = {
   rows: 15,
   cols: 18,
   target: [
@@ -628,7 +628,7 @@ export const doggie: BoardConfig = {
   ],
 };
 
-export const success: BoardConfig = {
+export const success: Puzzle = {
   rows: 8,
   cols: 11,
   target: [
@@ -702,7 +702,7 @@ export const success: BoardConfig = {
   destructibles: [[{ row: 5, col: 9 }]],
 };
 
-export const bone: BoardConfig = {
+export const bone: Puzzle = {
   rows: 12,
   cols: 8,
   target: [
@@ -758,7 +758,7 @@ export const bone: BoardConfig = {
   destructibles: [[{ row: 9, col: 4 }]],
 };
 
-export const fortune: BoardConfig = {
+export const fortune: Puzzle = {
   rows: 14,
   cols: 10,
   target: [
@@ -855,7 +855,7 @@ export const fortune: BoardConfig = {
   ],
 };
 
-export const fool: BoardConfig = {
+export const fool: Puzzle = {
   rows: 8,
   cols: 12,
   target: [
@@ -935,7 +935,7 @@ export const fool: BoardConfig = {
   destructibles: [[{ row: 3, col: 3 }]],
 };
 
-export const solomon: BoardConfig = {
+export const solomon: Puzzle = {
   rows: 11,
   cols: 11,
   target: [
@@ -1018,7 +1018,7 @@ export const solomon: BoardConfig = {
   ],
 };
 
-export const kleopatra: BoardConfig = {
+export const kleopatra: Puzzle = {
   rows: 10,
   cols: 10,
   target: [
@@ -1102,7 +1102,7 @@ export const kleopatra: BoardConfig = {
   ],
 };
 
-export const shark: BoardConfig = {
+export const shark: Puzzle = {
   rows: 12,
   cols: 14,
   target: [
@@ -1221,7 +1221,7 @@ export const shark: BoardConfig = {
   ],
 };
 
-export const rome: BoardConfig = {
+export const rome: Puzzle = {
   rows: 12,
   cols: 14,
   target: [
@@ -1340,7 +1340,7 @@ export const rome: BoardConfig = {
   ],
 };
 
-export const sunshine: BoardConfig = {
+export const sunshine: Puzzle = {
   rows: 27,
   cols: 27,
   target: [
