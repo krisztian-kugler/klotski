@@ -118,7 +118,20 @@ export class GateBlock extends Block implements Unlock, Destroy, Reset {
   }
 
   private calcUnlockZones() {
-    this.cells.forEach(cell => {
+    this.borders.forEach(({ top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }, cell) => {
+      const unlockCells: Cell[] = [];
+      if (!top) unlockCells.push({ col: cell.col, row: cell.row - 1 });
+      if (!bottom) unlockCells.push({ col: cell.col, row: cell.row + 1 });
+      if (!left) unlockCells.push({ col: cell.col - 1, row: cell.row });
+      if (!right) unlockCells.push({ col: cell.col + 1, row: cell.row });
+      if (top && left && !topLeft) unlockCells.push({ col: cell.col - 1, row: cell.row - 1 });
+      if (top && right && !topRight) unlockCells.push({ col: cell.col + 1, row: cell.row - 1 });
+      if (bottom && left && !bottomLeft) unlockCells.push({ col: cell.col - 1, row: cell.row + 1 });
+      if (bottom && right && !bottomRight) unlockCells.push({ col: cell.col + 1, row: cell.row + 1 });
+      this.unlockZones.set(cell, { unlocked: false, unlockCells: unlockCells });
+    });
+
+    /* this.cells.forEach(cell => {
       const unlockZones: Cell[] = [];
       const top = !this.cells.find(c => c.col === cell.col && c.row === cell.row - 1);
       const bottom = !this.cells.find(c => c.col === cell.col && c.row === cell.row + 1);
@@ -139,7 +152,7 @@ export class GateBlock extends Block implements Unlock, Destroy, Reset {
       if (bottomRight) unlockZones.push({ col: cell.col + 1, row: cell.row + 1 });
 
       this.unlockZones.set(cell, { unlocked: false, unlockCells: unlockZones });
-    });
+    }); */
 
     console.dir(this.unlockZones);
   }
