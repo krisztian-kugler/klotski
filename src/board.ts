@@ -1,21 +1,24 @@
-import { Position, Cell, Puzzle, DisplayConfig } from "./interfaces";
+import { Position, Cell, Puzzle, DisplayConfig, MoveHistoryEntry } from "./interfaces";
 import { Colors, Axis, Direction } from "./enums";
-import { Target, Block, MovableBlock, DestructibleBlock } from "./entities";
+import { Target, Block, MovableBlock, GateBlock } from "./entities";
 import CoverageMatrix from "./coverage-matrix";
 
 export default class Board {
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-  coverageMatrix: CoverageMatrix;
-  cols: number;
-  rows: number;
   cellSize = 30;
-  target: Target;
-  master: MovableBlock;
-  movables: MovableBlock[] = [];
-  destructibles: DestructibleBlock[] = [];
-  walls: Block[] = [];
-
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
+  private coverageMatrix: CoverageMatrix;
+  private moveHistory: MoveHistoryEntry[] = [];
+  private moveFrom: Cell;
+  private moveTo: Cell;
+  private movePath: Cell[] = [];
+  private cols: number;
+  private rows: number;
+  private target: Target;
+  private master: MovableBlock;
+  private movables: MovableBlock[] = [];
+  private gates: GateBlock[] = [];
+  private walls: Block[] = [];
   private cellFromPoint: Cell; // Cell at the current pointer position
   private activeBlock: MovableBlock; // The block that's currently being dragged
   private activeCell: Cell; // The cell of the active block at the current pointer position
@@ -45,7 +48,6 @@ export default class Board {
     if (this.displayConfig?.name) this.displayConfig.name.innerText = "Puzzle name";
     this.cols = puzzle.cols;
     this.rows = puzzle.rows;
-    // this.moveCount = 0;
     this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     this.createBoard();
     this.createEntities(puzzle);
@@ -73,9 +75,10 @@ export default class Board {
   }
 
   reset() {
+    this.moveHistory = [];
     this.moveCount = 0;
     this.coverageMatrix.reset();
-    [this.master, ...this.movables, ...this.destructibles].forEach(block => block.reset());
+    [this.master, ...this.movables, ...this.gates].forEach(block => block.reset());
     this.setupCoverageMatrix();
     this.renderEntities();
   }
@@ -92,12 +95,12 @@ export default class Board {
     this.target = new Target(puzzle.target);
     this.master = new MovableBlock(puzzle.master, true);
     this.movables = puzzle.movables?.map(cells => new MovableBlock(cells));
-    this.destructibles = puzzle.destructibles?.map(cells => new DestructibleBlock(cells));
+    this.gates = puzzle.gates?.map(cells => new GateBlock(cells));
     this.walls = puzzle.walls?.map(cells => new Block(cells));
   }
 
   private setupCoverageMatrix() {
-    [this.master, ...this.movables, ...this.destructibles, ...this.walls].forEach(block => {
+    [this.master, ...this.movables, ...this.gates, ...this.walls].forEach(block => {
       this.coverageMatrix.setValues(block.cells, false);
     });
   }
@@ -107,7 +110,7 @@ export default class Board {
     this.target.render(this.context, this.cellSize, Colors.TARGET);
     this.master.render(this.context, this.cellSize, Colors.MASTER);
     this.movables.forEach(movable => movable.render(this.context, this.cellSize, Colors.MOVABLE));
-    this.destructibles.forEach(destructible => destructible.render(this.context, this.cellSize, Colors.DESTRUCTIBLE));
+    this.gates.forEach(destructible => destructible.render(this.context, this.cellSize, Colors.DESTRUCTIBLE));
     this.walls.forEach(wall => wall.render(this.context, this.cellSize, Colors.WALL));
   }
 
@@ -125,7 +128,7 @@ export default class Board {
   }
 
   private getBlock(cell: Cell): Block {
-    return [this.master, ...this.movables, ...this.destructibles, ...this.walls].find(block =>
+    return [this.master, ...this.movables, ...this.gates, ...this.walls].find(block =>
       block.cells.find(c => c.col === cell.col && c.row === cell.row)
     );
   }
@@ -139,10 +142,12 @@ export default class Board {
       this.dragging = true;
       this.activeCell = { ...this.cellFromPoint };
       this.activeBlock = block;
+      this.moveFrom = { ...this.activeBlock.cells[0] };
+      this.movePath.push({ ...this.activeBlock.cells[0] });
       this.coverageMatrix.setValues(this.activeBlock.cells, true);
     }
 
-    if (block instanceof DestructibleBlock && block.unlocked) {
+    if (block instanceof GateBlock && block.unlocked) {
       block.destroy(this.context, this.cellSize);
       this.coverageMatrix.setValues(block.cells, true);
     }
@@ -170,9 +175,10 @@ export default class Board {
           );
 
           if (canMove) {
-            this.activeBlock.cells.forEach(c => {
+            /* this.activeBlock.cells.forEach(c => {
               this.context.clearRect(c.col * this.cellSize, c.row * this.cellSize, this.cellSize, this.cellSize);
-            });
+            }); */
+            this.activeBlock.destroy(this.context, this.cellSize);
             this.activeBlock.move(axis, direction);
             this.activeBlock.render(
               this.context,
@@ -181,8 +187,10 @@ export default class Board {
             );
             this.activeCell = { ...this.cellFromPoint };
 
+            this.movePath.push({ ...this.activeBlock.cells[0] });
+
             if (!this.activeBlockMoved) {
-              this.moveCount++;
+              // this.moveCount++;
               this.activeBlockMoved = true;
             }
           } else if (this.activeBlock.contains(this.cellFromPoint)) {
@@ -198,8 +206,20 @@ export default class Board {
   private onPointerUp = () => {
     if (this.dragging) {
       this.dragging = false;
+      this.moveTo = { ...this.activeBlock.cells[0] };
+
+      if (this.moveFrom.col !== this.moveTo.col || this.moveFrom.row !== this.moveTo.row) {
+        this.moveHistory.push({
+          from: this.moveFrom,
+          to: this.moveTo,
+        });
+        this.moveCount = this.moveHistory.length;
+        console.log(this.movePath);
+        this.movePath = [];
+      }
+
       this.coverageMatrix.setValues(this.activeBlock.cells, false);
-      this.activeBlock = this.activeCell = null;
+      this.activeBlock = this.activeCell = this.moveFrom = this.moveTo = null;
       this.activeBlockMoved = false;
     }
   };

@@ -1,4 +1,4 @@
-import { Cell, Render, BorderDescriptor, Movable, Destructible } from "./interfaces";
+import { Cell, Render, BorderDescriptor, Destroy, Reset, Move, Unlock } from "./interfaces";
 import { Axis, Direction } from "./enums";
 
 export class Entity {
@@ -62,7 +62,7 @@ export class Block extends Entity implements Render {
   }
 }
 
-export class MovableBlock extends Block implements Movable {
+export class MovableBlock extends Block implements Move, Destroy, Reset {
   startCells: Cell[];
 
   constructor(cells: Cell[], public master = false) {
@@ -72,6 +72,10 @@ export class MovableBlock extends Block implements Movable {
 
   move(axis: Axis, direction: Direction) {
     this.cells.forEach(cell => (cell[axis] += direction));
+  }
+
+  destroy(context: CanvasRenderingContext2D, cellSize: number) {
+    this.cells.forEach(cell => context.clearRect(cell.col * cellSize, cell.row * cellSize, cellSize, cellSize));
   }
 
   reset() {
@@ -85,7 +89,7 @@ export class MovableBlock extends Block implements Movable {
   }
 }
 
-export class DestructibleBlock extends Block implements Destructible {
+export class GateBlock extends Block implements Unlock, Destroy, Reset {
   lockState: Map<Cell, boolean>;
   unlocked = false;
 

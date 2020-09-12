@@ -20,7 +20,7 @@ export interface Puzzle {
   master: Cell[];
   movables?: Cell[][];
   walls?: Cell[][];
-  destructibles?: Cell[][];
+  gates?: Cell[][];
 }
 
 export interface DisplayConfig {
@@ -33,17 +33,19 @@ export interface Render {
   render: (context: CanvasRenderingContext2D, cellSize: number, color: string) => void;
 }
 
-export interface Movable {
-  startCells: Cell[];
+export interface Move {
   move: (axis: Axis, direction: Direction) => void;
-  reset: () => void;
 }
 
-export interface Destructible {
-  lockState: Map<Cell, boolean>;
-  unlocked: boolean;
+export interface Unlock {
   unlock: (cell: Cell) => void;
+}
+
+export interface Destroy {
   destroy: (context: CanvasRenderingContext2D, cellSize: number) => void;
+}
+
+export interface Reset {
   reset: () => void;
 }
 
@@ -56,4 +58,10 @@ export interface BorderDescriptor {
   topRight: boolean;
   bottomLeft: boolean;
   bottomRight: boolean;
+}
+
+export interface MoveHistoryEntry {
+  from: Cell;
+  to: Cell;
+  path?: Cell[];
 }

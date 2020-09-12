@@ -59,7 +59,7 @@ export const daisy: Puzzle = {
       { row: 8, col: 6 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 8, col: 4 },
       { row: 8, col: 5 },
@@ -128,7 +128,7 @@ export const violet: Puzzle = {
       { row: 9, col: 7 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 9, col: 5 },
       { row: 9, col: 6 },
@@ -197,7 +197,7 @@ export const poppy: Puzzle = {
       { row: 9, col: 7 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 9, col: 5 },
       { row: 9, col: 6 },
@@ -268,7 +268,7 @@ export const pansy: Puzzle = {
       { row: 9, col: 7 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 9, col: 5 },
       { row: 9, col: 6 },
@@ -339,7 +339,7 @@ export const snowdrop: Puzzle = {
       { row: 9, col: 7 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 9, col: 5 },
       { row: 9, col: 6 },
@@ -412,7 +412,7 @@ export const forgetMeNot: Puzzle = {
       { row: 9, col: 7 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 9, col: 5 },
       { row: 9, col: 6 },
@@ -520,7 +520,7 @@ export const agatka: Puzzle = {
       { row: 5, col: 9 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 3, col: 8 },
       { row: 3, col: 9 },
@@ -618,7 +618,7 @@ export const doggie: Puzzle = {
       { row: 9, col: 14 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 10, col: 14 },
       { row: 11, col: 14 },
@@ -699,7 +699,7 @@ export const success: Puzzle = {
       { row: 4, col: 9 },
     ],
   ],
-  destructibles: [[{ row: 5, col: 9 }]],
+  gates: [[{ row: 5, col: 9 }]],
 };
 
 export const bone: Puzzle = {
@@ -755,7 +755,7 @@ export const bone: Puzzle = {
       { row: 9, col: 5 },
     ],
   ],
-  destructibles: [[{ row: 9, col: 4 }]],
+  gates: [[{ row: 9, col: 4 }]],
 };
 
 export const fortune: Puzzle = {
@@ -846,7 +846,7 @@ export const fortune: Puzzle = {
       { row: 6, col: 8 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 4, col: 7 },
       { row: 4, col: 8 },
@@ -932,7 +932,7 @@ export const fool: Puzzle = {
       { row: 4, col: 3 },
     ],
   ],
-  destructibles: [[{ row: 3, col: 3 }]],
+  gates: [[{ row: 3, col: 3 }]],
 };
 
 export const solomon: Puzzle = {
@@ -1009,7 +1009,7 @@ export const solomon: Puzzle = {
       { row: 6, col: 3 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 3, col: 4 },
       { row: 3, col: 5 },
@@ -1093,7 +1093,7 @@ export const kleopatra: Puzzle = {
       { row: 6, col: 8 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 8, col: 7 },
       { row: 8, col: 8 },
@@ -1213,7 +1213,7 @@ export const shark: Puzzle = {
       { row: 3, col: 11 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 4, col: 11 },
       { row: 5, col: 11 },
@@ -1332,7 +1332,7 @@ export const rome: Puzzle = {
       { row: 3, col: 11 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 4, col: 11 },
       { row: 5, col: 11 },
@@ -2256,7 +2256,7 @@ export const sunshine: Puzzle = {
       { row: 22, col: 17 },
     ],
   ],
-  destructibles: [
+  gates: [
     [
       { row: 22, col: 12 },
       { row: 22, col: 13 },

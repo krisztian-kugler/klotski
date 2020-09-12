@@ -43,7 +43,7 @@ export class OldBoard {
     this.masterBlock = this.createEntity(Block, config.master, true);
     if (config.movables) this.blocks = config.movables.map(cells => this.createEntity(Block, cells));
     if (config.walls) this.walls = config.walls.map(cells => this.createEntity(Wall, cells));
-    if (config.destructibles) this.gates = config.destructibles.map(cells => this.createEntity(Gate, cells));
+    if (config.gates) this.gates = config.gates.map(cells => this.createEntity(Gate, cells));
 
     this.init();
 

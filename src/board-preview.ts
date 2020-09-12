@@ -10,7 +10,7 @@ export default class BoardPreview {
   target: Target;
   master: Block;
   movables: Block[];
-  destructibles: Block[];
+  gates: Block[];
   walls: Block[];
 
   constructor(config: Puzzle) {}

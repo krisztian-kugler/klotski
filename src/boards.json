@@ -60,7 +60,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
@@ -129,7 +129,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
@@ -198,7 +198,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
@@ -269,7 +269,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
@@ -340,7 +340,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
@@ -413,7 +413,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
@@ -485,7 +485,7 @@
           { "col": 7, "row": 8 }
         ]
       ],
-      "destructibles": [
+      "gates": [
         [
           { "col": 4, "row": 8 },
           { "col": 5, "row": 8 }
