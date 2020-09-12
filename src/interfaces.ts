@@ -34,7 +34,7 @@ export interface Render {
 }
 
 export interface Move {
-  move: (axis: Axis, direction: Direction) => void;
+  move: (axis: Axis, direction: Direction, amount: number) => void;
 }
 
 export interface Unlock {

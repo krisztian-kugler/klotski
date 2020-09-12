@@ -70,8 +70,8 @@ export class MovableBlock extends Block implements Move, Destroy, Reset {
     this.startCells = this.cloneCells(this.cells);
   }
 
-  move(axis: Axis, direction: Direction) {
-    this.cells.forEach(cell => (cell[axis] += direction));
+  move(axis: Axis, direction: Direction, amount = 1) {
+    this.cells.forEach(cell => (cell[axis] += direction * amount));
   }
 
   destroy(context: CanvasRenderingContext2D, cellSize: number) {

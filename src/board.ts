@@ -8,10 +8,6 @@ export default class Board {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private coverageMatrix: CoverageMatrix;
-  private moveHistory: MoveHistoryEntry[] = [];
-  private moveFrom: Cell;
-  private moveTo: Cell;
-  private movePath: Cell[] = [];
   private cols: number;
   private rows: number;
   private target: Target;
@@ -22,9 +18,11 @@ export default class Board {
   private cellFromPoint: Cell; // Cell at the current pointer position
   private activeBlock: MovableBlock; // The block that's currently being dragged
   private activeCell: Cell; // The cell of the active block at the current pointer position
-  private activeBlockMoved = false;
-  private _dragging = false;
+  private moveHistory: MoveHistoryEntry[] = [];
+  private moveFrom: Cell;
+  private moveTo: Cell;
   private _moveCount = 0;
+  private _dragging = false;
 
   set dragging(value: boolean) {
     this._dragging = value;
@@ -133,6 +131,25 @@ export default class Board {
     );
   }
 
+  private replay() {
+    this.moveHistory.forEach(entry => {
+      const block = this.getBlock(entry.from) as MovableBlock;
+      const colOffset = entry.to.col - entry.from.col;
+      const rowOffset = entry.to.row - entry.from.row;
+
+      if (colOffset !== 0) {
+        const direction = colOffset > 0 ? Direction.UP : Direction.DOWN;
+        block.move(Axis.COL, direction, Math.abs(colOffset));
+      }
+
+      if (rowOffset !== 0) {
+        const direction = rowOffset > 0 ? Direction.UP : Direction.DOWN;
+        block.move(Axis.ROW, direction, Math.abs(rowOffset));
+      }
+    });
+    this.renderEntities();
+  }
+
   private onPointerDown = (event: PointerEvent) => {
     event.preventDefault();
     this.cellFromPoint = this.getCell(this.getPosition(event));
@@ -143,7 +160,6 @@ export default class Board {
       this.activeCell = { ...this.cellFromPoint };
       this.activeBlock = block;
       this.moveFrom = { ...this.activeBlock.cells[0] };
-      this.movePath.push({ ...this.activeBlock.cells[0] });
       this.coverageMatrix.setValues(this.activeBlock.cells, true);
     }
 
@@ -175,9 +191,6 @@ export default class Board {
           );
 
           if (canMove) {
-            /* this.activeBlock.cells.forEach(c => {
-              this.context.clearRect(c.col * this.cellSize, c.row * this.cellSize, this.cellSize, this.cellSize);
-            }); */
             this.activeBlock.destroy(this.context, this.cellSize);
             this.activeBlock.move(axis, direction);
             this.activeBlock.render(
@@ -186,13 +199,6 @@ export default class Board {
               this.activeBlock.master ? Colors.MASTER : Colors.MOVABLE
             );
             this.activeCell = { ...this.cellFromPoint };
-
-            this.movePath.push({ ...this.activeBlock.cells[0] });
-
-            if (!this.activeBlockMoved) {
-              // this.moveCount++;
-              this.activeBlockMoved = true;
-            }
           } else if (this.activeBlock.contains(this.cellFromPoint)) {
             this.activeCell = { ...this.cellFromPoint };
           } else {
@@ -209,18 +215,12 @@ export default class Board {
       this.moveTo = { ...this.activeBlock.cells[0] };
 
       if (this.moveFrom.col !== this.moveTo.col || this.moveFrom.row !== this.moveTo.row) {
-        this.moveHistory.push({
-          from: this.moveFrom,
-          to: this.moveTo,
-        });
+        this.moveHistory.push({ from: this.moveFrom, to: this.moveTo });
         this.moveCount = this.moveHistory.length;
-        console.log(this.movePath);
-        this.movePath = [];
       }
 
       this.coverageMatrix.setValues(this.activeBlock.cells, false);
       this.activeBlock = this.activeCell = this.moveFrom = this.moveTo = null;
-      this.activeBlockMoved = false;
     }
   };
 }
