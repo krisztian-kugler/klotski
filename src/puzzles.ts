@@ -421,8 +421,8 @@ export const forgetMeNot: Puzzle = {
 };
 
 export const agatka: Puzzle = {
-  rows: 9,
-  cols: 11,
+  rows: 10,
+  cols: 12,
   target: [
     { row: 8, col: 1 },
     { row: 8, col: 2 },

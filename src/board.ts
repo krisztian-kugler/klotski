@@ -150,6 +150,23 @@ export default class Board {
     this.renderEntities();
   }
 
+  private gateChecker() {
+    this.master.cells.forEach(masterCell => {
+      this.gates.forEach(gate => {
+        if (!gate.unlocked) {
+          Array.from(gate.unlockZones).forEach(([cell, cellLockState]) => {
+            if (
+              !cellLockState.unlocked &&
+              cellLockState.unlockCells.find(z => z.col === masterCell.col && z.row === masterCell.row)
+            ) {
+              gate.unlock(cell, this.context, this.cellSize);
+            }
+          });
+        }
+      });
+    });
+  }
+
   private onPointerDown = (event: PointerEvent) => {
     event.preventDefault();
     this.cellFromPoint = this.getCell(this.getPosition(event));
@@ -198,6 +215,9 @@ export default class Board {
               this.cellSize,
               this.activeBlock.master ? Colors.MASTER : Colors.MOVABLE
             );
+
+            if (this.activeBlock.master) this.gateChecker();
+
             this.activeCell = { ...this.cellFromPoint };
           } else if (this.activeBlock.contains(this.cellFromPoint)) {
             this.activeCell = { ...this.cellFromPoint };

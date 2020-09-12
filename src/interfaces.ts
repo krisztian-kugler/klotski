@@ -38,7 +38,7 @@ export interface Move {
 }
 
 export interface Unlock {
-  unlock: (cell: Cell) => void;
+  unlock: (cell: Cell, context: CanvasRenderingContext2D, cellSize: number) => void;
 }
 
 export interface Destroy {
@@ -50,6 +50,7 @@ export interface Reset {
 }
 
 export interface BorderDescriptor {
+  [key: string]: boolean;
   top: boolean;
   bottom: boolean;
   left: boolean;
@@ -64,4 +65,9 @@ export interface MoveHistoryEntry {
   from: Cell;
   to: Cell;
   path?: Cell[];
+}
+
+export interface CellLockState {
+  unlocked: boolean;
+  unlockCells: Cell[];
 }
