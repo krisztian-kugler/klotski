@@ -9,7 +9,7 @@ export enum Direction {
 }
 
 export enum Colors {
-  TARGET = "rgba(0, 0, 0, .5)",
+  TARGET = "rgb(19, 26, 34)",
   MASTER = "rgb(226, 67, 67)",
   MOVABLE = "rgb(247, 209, 86)",
   DESTRUCTIBLE = "rgb(13, 218, 110)",

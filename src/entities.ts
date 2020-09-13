@@ -1,11 +1,14 @@
 import { Cell, Render, BorderDescriptor, Destroy, Reset, Move, Unlock, CellLockData } from "./interfaces";
 import { Axis, Direction } from "./enums";
+import { isSameCell } from "./utils";
 
 export class Entity {
   constructor(public cells: Cell[]) {}
 }
 
 export class Target extends Entity implements Render {
+  coverDataMap = new Map();
+
   constructor(cells: Cell[]) {
     super(cells);
   }
@@ -15,6 +18,11 @@ export class Target extends Entity implements Render {
     this.cells.forEach(cell =>
       context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4)
     );
+  }
+
+  renderCell(cell: Cell, context: CanvasRenderingContext2D, cellSize: number, color: string) {
+    context.fillStyle = color;
+    context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4);
   }
 }
 
@@ -27,7 +35,7 @@ export class Block extends Entity implements Render {
   }
 
   contains(cell: Cell): boolean {
-    return !!this.cells.find(c => c.col === cell.col && c.row === cell.row);
+    return !!this.cells.find(c => isSameCell(c, cell));
   }
 
   render(context: CanvasRenderingContext2D, cellSize: number, color: string) {
