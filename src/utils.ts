@@ -8,3 +8,5 @@ export const toZeroBased = (value: string | number): number => {
 };
 
 export const isSameCell = (a: Cell, b: Cell): boolean => a.col === b.col && a.row === b.row;
+
+export const isDifferentCell = (a: Cell, b: Cell): boolean => a.col !== b.col || a.row !== b.row;

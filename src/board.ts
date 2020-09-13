@@ -1,11 +1,13 @@
 import { Position, Cell, Puzzle, DisplayConfig, MoveHistoryEntry } from "./interfaces";
 import { Colors, Axis, Direction } from "./enums";
-import { Target, Block, MovableBlock, GateBlock } from "./entities";
+import { Target, Block, MovableBlock, GateBlock, WallBlock } from "./entities";
 import CoverageMatrix from "./coverage-matrix";
-import { isSameCell } from "./utils";
+import { isDifferentCell, isSameCell } from "./utils";
+import { Klotski } from "./main";
 
 export default class Board {
-  cellSize = 30;
+  cellSize = Klotski.mainBoardCellSize;
+  private isPlaying = true;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private coverageMatrix: CoverageMatrix;
@@ -58,9 +60,9 @@ export default class Board {
     const host = document.querySelector(selector);
     if (host) {
       host.append(this.canvas);
-      this.canvas.addEventListener("pointerdown", this.onPointerDown);
-      document.addEventListener("pointermove", this.onPointerMove);
-      document.addEventListener("pointerup", this.onPointerUp);
+      this.canvas.addEventListener("pointerdown", this.dragStart);
+      document.addEventListener("pointermove", this.dragMove);
+      document.addEventListener("pointerup", this.dragEnd);
     } else {
       throw new Error(`Board cannot be attached to '${selector}'. Element doesn't exist.`);
     }
@@ -74,6 +76,7 @@ export default class Board {
   }
 
   reset() {
+    this.isPlaying = true;
     this.moveHistory = [];
     this.moveCount = 0;
     this.coverageMatrix.reset();
@@ -91,11 +94,11 @@ export default class Board {
   }
 
   private createEntities(puzzle: Puzzle) {
-    this.target = new Target(puzzle.target);
-    this.master = new MovableBlock(puzzle.master, true);
-    this.movables = puzzle.movables?.map(cells => new MovableBlock(cells));
-    this.gates = puzzle.gates?.map(cells => new GateBlock(cells));
-    this.walls = puzzle.walls?.map(cells => new Block(cells));
+    this.target = new Target(puzzle.target, this.canvas);
+    this.master = new MovableBlock(puzzle.master, this.canvas, true);
+    this.movables = puzzle.movables?.map(cells => new MovableBlock(cells, this.canvas));
+    this.gates = puzzle.gates?.map(cells => new GateBlock(cells, this.canvas));
+    this.walls = puzzle.walls?.map(cells => new WallBlock(cells, this.canvas));
   }
 
   private setupCoverageMatrix() {
@@ -106,9 +109,9 @@ export default class Board {
 
   private renderEntities() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.target.render(this.context, this.cellSize, Colors.TARGET);
-    this.master.render(this.context, this.cellSize, Colors.MASTER);
-    this.movables.forEach(movable => movable.render(this.context, this.cellSize, Colors.MOVABLE));
+    this.target.render(this.context, this.cellSize);
+    this.master.render(this.context, this.cellSize);
+    this.movables.forEach(movable => movable.render(this.context, this.cellSize));
     this.gates.forEach(destructible => destructible.render(this.context, this.cellSize, Colors.DESTRUCTIBLE));
     this.walls.forEach(wall => wall.render(this.context, this.cellSize, Colors.WALL));
   }
@@ -172,7 +175,8 @@ export default class Board {
     );
   }
 
-  private onPointerDown = (event: PointerEvent) => {
+  private dragStart = (event: PointerEvent) => {
+    if (!this.isPlaying) return;
     event.preventDefault();
     this.cellFromPoint = this.getCell(this.getPosition(event));
     const block = this.getBlock(this.cellFromPoint);
@@ -191,18 +195,18 @@ export default class Board {
     }
   };
 
-  private onPointerMove = (event: PointerEvent) => {
+  private dragMove = (event: PointerEvent) => {
     if (this.dragging) {
       const cell = this.getCell(this.getPosition(event));
 
-      if (!isSameCell(cell, this.cellFromPoint)) {
+      if (isDifferentCell(cell, this.cellFromPoint)) {
         this.cellFromPoint = { ...cell };
 
         if (!this.activeCell && this.activeBlock.contains(this.cellFromPoint)) {
           this.activeCell = { ...this.cellFromPoint };
         }
 
-        if (this.activeCell && !isSameCell(this.activeCell, this.cellFromPoint)) {
+        if (this.activeCell && isDifferentCell(this.activeCell, this.cellFromPoint)) {
           const axis = this.cellFromPoint.col !== this.activeCell.col ? Axis.COL : Axis.ROW;
           const direction = this.cellFromPoint[axis] > this.activeCell[axis] ? Direction.UP : Direction.DOWN;
           const canMove = this.coverageMatrix.isAccessible(
@@ -212,24 +216,23 @@ export default class Board {
           if (canMove) {
             this.activeBlock.destroy(this.context, this.cellSize);
             this.activeBlock.move(axis, direction);
-            // this.target.render(this.context, this.cellSize, Colors.TARGET);
 
             this.target.cells.forEach(targetCell => {
-              if (!this.activeBlock.cells.find(cell => isSameCell(cell, targetCell))) {
-                this.target.renderCell(targetCell, this.context, this.cellSize, Colors.TARGET);
+              if (
+                this.coverageMatrix.getValue(targetCell.col, targetCell.row) &&
+                this.activeBlock.cells.every(cell => isDifferentCell(cell, targetCell))
+              ) {
+                this.target.renderCell(targetCell, this.context, this.cellSize);
               }
             });
 
-            this.activeBlock.render(
-              this.context,
-              this.cellSize,
-              this.activeBlock.master ? Colors.MASTER : Colors.MOVABLE
-            );
+            this.activeBlock.render(this.context, this.cellSize);
 
             if (this.activeBlock.master) {
               if (this.checkWinCondition()) {
-                this.moveCount++;
                 console.log("you won!");
+                this.dragEnd();
+                this.isPlaying = false;
               } else {
                 this.scanGates();
               }
@@ -246,12 +249,12 @@ export default class Board {
     }
   };
 
-  private onPointerUp = () => {
+  private dragEnd = () => {
     if (this.dragging) {
       this.dragging = false;
       this.moveTo = { ...this.activeBlock.cells[0] };
 
-      if (!isSameCell(this.moveFrom, this.moveTo)) {
+      if (isDifferentCell(this.moveFrom, this.moveTo)) {
         this.moveHistory.push({ from: this.moveFrom, to: this.moveTo });
         this.moveCount = this.moveHistory.length;
       }

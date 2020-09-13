@@ -1,36 +1,36 @@
 import { Cell, Render, BorderDescriptor, Destroy, Reset, Move, Unlock, CellLockData } from "./interfaces";
-import { Axis, Direction } from "./enums";
+import { Axis, Colors, Direction } from "./enums";
 import { isSameCell } from "./utils";
 
-export class Entity {
-  constructor(public cells: Cell[]) {}
+export abstract class Entity {
+  constructor(public cells: Cell[], protected canvas: HTMLCanvasElement) {}
 }
 
 export class Target extends Entity implements Render {
   coverDataMap = new Map();
 
-  constructor(cells: Cell[]) {
-    super(cells);
+  constructor(cells: Cell[], canvas: HTMLCanvasElement) {
+    super(cells, canvas);
   }
 
-  render(context: CanvasRenderingContext2D, cellSize: number, color: string) {
-    context.fillStyle = color;
+  render(context: CanvasRenderingContext2D, cellSize: number) {
+    context.fillStyle = Colors.TARGET;
     this.cells.forEach(cell =>
       context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4)
     );
   }
 
-  renderCell(cell: Cell, context: CanvasRenderingContext2D, cellSize: number, color: string) {
-    context.fillStyle = color;
+  renderCell(cell: Cell, context: CanvasRenderingContext2D, cellSize: number) {
+    context.fillStyle = Colors.TARGET;
     context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4);
   }
 }
 
-export class Block extends Entity implements Render {
+export abstract class Block extends Entity implements Render {
   protected borders = new Map<Cell, BorderDescriptor>();
 
-  constructor(cells: Cell[]) {
-    super(cells);
+  constructor(cells: Cell[], canvas: HTMLCanvasElement) {
+    super(cells, canvas);
     this.setBorders();
   }
 
@@ -70,12 +70,22 @@ export class Block extends Entity implements Render {
   }
 }
 
-export class MovableBlock extends Block implements Move, Destroy, Reset {
+export class WallBlock extends Block {
+  constructor(cells: Cell[], canvas: HTMLCanvasElement) {
+    super(cells, canvas);
+  }
+}
+
+export class MovableBlock extends Block implements Render, Move, Destroy, Reset {
   startCells: Cell[];
 
-  constructor(cells: Cell[], public master = false) {
-    super(cells);
+  constructor(cells: Cell[], canvas: HTMLCanvasElement, public master = false) {
+    super(cells, canvas);
     this.startCells = this.cloneCells(this.cells);
+  }
+
+  render(context: CanvasRenderingContext2D, cellSize: number, color?: string) {
+    super.render(context, cellSize, this.master ? Colors.MASTER : Colors.MOVABLE);
   }
 
   move(axis: Axis, direction: Direction, amount = 1) {
@@ -101,8 +111,8 @@ export class GateBlock extends Block implements Unlock, Destroy, Reset {
   lockDataMap = new Map<Cell, CellLockData>();
   unlocked = false;
 
-  constructor(cells: Cell[]) {
-    super(cells);
+  constructor(cells: Cell[], canvas: HTMLCanvasElement) {
+    super(cells, canvas);
     this.setLockData();
   }
 

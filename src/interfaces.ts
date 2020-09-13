@@ -27,10 +27,12 @@ export interface DisplayConfig {
   host?: HTMLElement;
   name?: HTMLElement;
   moveCount?: HTMLElement;
+  cellSize?: number;
+  moveHistory?: any;
 }
 
 export interface Render {
-  render: (context: CanvasRenderingContext2D, cellSize: number, color: string) => void;
+  render: (context: CanvasRenderingContext2D, cellSize: number, color?: string) => void;
 }
 
 export interface Move {
