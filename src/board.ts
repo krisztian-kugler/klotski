@@ -49,11 +49,11 @@ export default class Board {
     if (this.displayConfig?.name) this.displayConfig.name.innerText = "Puzzle name";
     this.cols = puzzle.cols;
     this.rows = puzzle.rows;
-    this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     this.createBoard();
     this.createEntities(puzzle);
-    this.setupCoverageMatrix();
     this.renderEntities();
+    this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
+    this.setupCoverageMatrix();
   }
 
   attach(selector: string) {

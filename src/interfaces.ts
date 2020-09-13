@@ -31,6 +31,15 @@ export interface DisplayConfig {
   moveHistory?: any;
 }
 
+export interface BoardConfig {
+  puzzle: Puzzle;
+  cellSize: number;
+  hostElement: HTMLElement;
+  nameElement?: HTMLElement;
+  moveCountElement?: HTMLElement;
+  moveHistory?: any;
+}
+
 export interface Render {
   render: (context: CanvasRenderingContext2D, cellSize: number, color?: string) => void;
 }
