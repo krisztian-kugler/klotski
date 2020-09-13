@@ -67,7 +67,7 @@ export interface MoveHistoryEntry {
   path?: Cell[];
 }
 
-export interface CellLockState {
+export interface CellLockData {
+  keyCells: Cell[];
   unlocked: boolean;
-  unlockCells: Cell[];
 }

@@ -24,7 +24,7 @@ export const daisy: Puzzle = {
       { row: 3, col: 6 },
       { row: 4, col: 6 },
     ],
-    [{ row: 5, col: 3 }],
+    /* [{ row: 5, col: 3 }],
     [{ row: 5, col: 4 }],
     [{ row: 5, col: 5 }],
     [{ row: 5, col: 6 }],
@@ -33,10 +33,11 @@ export const daisy: Puzzle = {
     [{ row: 6, col: 5 }],
     [{ row: 6, col: 6 }],
     [{ row: 7, col: 3 }],
-    [{ row: 7, col: 6 }],
+    [{ row: 7, col: 6 }], */
   ],
   walls: [
     [
+      { row: 8, col: 4 },
       { row: 8, col: 3 },
       { row: 8, col: 2 },
       { row: 7, col: 2 },
@@ -54,15 +55,14 @@ export const daisy: Puzzle = {
       { row: 4, col: 7 },
       { row: 5, col: 7 },
       { row: 6, col: 7 },
-      { row: 7, col: 7 },
-      { row: 8, col: 7 },
-      { row: 8, col: 6 },
     ],
   ],
   gates: [
     [
-      { row: 8, col: 4 },
       { row: 8, col: 5 },
+      { row: 8, col: 6 },
+      { row: 8, col: 7 },
+      { row: 7, col: 7 },
     ],
   ],
 };

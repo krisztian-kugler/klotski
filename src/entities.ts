@@ -1,4 +1,4 @@
-import { Cell, Render, BorderDescriptor, Destroy, Reset, Move, Unlock, CellLockState } from "./interfaces";
+import { Cell, Render, BorderDescriptor, Destroy, Reset, Move, Unlock, CellLockData } from "./interfaces";
 import { Axis, Direction } from "./enums";
 
 export class Entity {
@@ -90,21 +90,18 @@ export class MovableBlock extends Block implements Move, Destroy, Reset {
 }
 
 export class GateBlock extends Block implements Unlock, Destroy, Reset {
-  lockState: Map<Cell, boolean>;
+  lockDataMap = new Map<Cell, CellLockData>();
   unlocked = false;
-  unlockZones: Map<Cell, CellLockState> = new Map();
 
   constructor(cells: Cell[]) {
     super(cells);
-    this.lockState = new Map(this.cells.map(cell => [cell, false]));
-    this.calcUnlockZones();
+    this.setLockData();
   }
 
   unlock(cell: Cell, context: CanvasRenderingContext2D, cellSize: number) {
-    this.lockState.set(cell, true);
-    this.unlockZones.get(cell).unlocked = true;
-    context.clearRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4);
-    if (Array.from(this.lockState).every(([_, value]) => value)) this.unlocked = true;
+    this.lockDataMap.get(cell).unlocked = true;
+    context.clearRect(cell.col * cellSize + 6, cell.row * cellSize + 6, cellSize - 12, cellSize - 12);
+    if (Array.from(this.lockDataMap).every(([_, lockData]) => lockData.unlocked)) this.unlocked = true;
   }
 
   destroy(context: CanvasRenderingContext2D, cellSize: number) {
@@ -113,47 +110,21 @@ export class GateBlock extends Block implements Unlock, Destroy, Reset {
 
   reset() {
     this.unlocked = false;
-    this.lockState.forEach(value => (value = false));
-    this.unlockZones.forEach(cellLockState => (cellLockState.unlocked = false));
+    this.lockDataMap.forEach(lockData => (lockData.unlocked = false));
   }
 
-  private calcUnlockZones() {
+  private setLockData() {
     this.borders.forEach(({ top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }, cell) => {
-      const unlockCells: Cell[] = [];
-      if (!top) unlockCells.push({ col: cell.col, row: cell.row - 1 });
-      if (!bottom) unlockCells.push({ col: cell.col, row: cell.row + 1 });
-      if (!left) unlockCells.push({ col: cell.col - 1, row: cell.row });
-      if (!right) unlockCells.push({ col: cell.col + 1, row: cell.row });
-      if (top && left && !topLeft) unlockCells.push({ col: cell.col - 1, row: cell.row - 1 });
-      if (top && right && !topRight) unlockCells.push({ col: cell.col + 1, row: cell.row - 1 });
-      if (bottom && left && !bottomLeft) unlockCells.push({ col: cell.col - 1, row: cell.row + 1 });
-      if (bottom && right && !bottomRight) unlockCells.push({ col: cell.col + 1, row: cell.row + 1 });
-      this.unlockZones.set(cell, { unlocked: false, unlockCells: unlockCells });
+      const keyCells: Cell[] = [];
+      if (!top) keyCells.push({ col: cell.col, row: cell.row - 1 });
+      if (!bottom) keyCells.push({ col: cell.col, row: cell.row + 1 });
+      if (!left) keyCells.push({ col: cell.col - 1, row: cell.row });
+      if (!right) keyCells.push({ col: cell.col + 1, row: cell.row });
+      if (top && left && !topLeft) keyCells.push({ col: cell.col - 1, row: cell.row - 1 });
+      if (top && right && !topRight) keyCells.push({ col: cell.col + 1, row: cell.row - 1 });
+      if (bottom && left && !bottomLeft) keyCells.push({ col: cell.col - 1, row: cell.row + 1 });
+      if (bottom && right && !bottomRight) keyCells.push({ col: cell.col + 1, row: cell.row + 1 });
+      this.lockDataMap.set(cell, { keyCells, unlocked: false });
     });
-
-    /* this.cells.forEach(cell => {
-      const unlockZones: Cell[] = [];
-      const top = !this.cells.find(c => c.col === cell.col && c.row === cell.row - 1);
-      const bottom = !this.cells.find(c => c.col === cell.col && c.row === cell.row + 1);
-      const left = !this.cells.find(c => c.col === cell.col - 1 && c.row === cell.row);
-      const right = !this.cells.find(c => c.col === cell.col + 1 && c.row === cell.row);
-      const topLeft = !top && !left && !this.cells.find(c => c.col === cell.col - 1 && c.row === cell.row - 1);
-      const topRight = !top && !right && !this.cells.find(c => c.col === cell.col + 1 && c.row === cell.row - 1);
-      const bottomLeft = !bottom && !left && !this.cells.find(c => c.col === cell.col - 1 && c.row === cell.row + 1);
-      const bottomRight = !bottom && !right && !this.cells.find(c => c.col === cell.col + 1 && c.row === cell.row + 1);
-
-      if (top) unlockZones.push({ col: cell.col, row: cell.row - 1 });
-      if (bottom) unlockZones.push({ col: cell.col, row: cell.row + 1 });
-      if (left) unlockZones.push({ col: cell.col - 1, row: cell.row });
-      if (right) unlockZones.push({ col: cell.col + 1, row: cell.row });
-      if (topLeft) unlockZones.push({ col: cell.col - 1, row: cell.row - 1 });
-      if (topRight) unlockZones.push({ col: cell.col + 1, row: cell.row - 1 });
-      if (bottomLeft) unlockZones.push({ col: cell.col - 1, row: cell.row + 1 });
-      if (bottomRight) unlockZones.push({ col: cell.col + 1, row: cell.row + 1 });
-
-      this.unlockZones.set(cell, { unlocked: false, unlockCells: unlockZones });
-    }); */
-
-    console.dir(this.unlockZones);
   }
 }

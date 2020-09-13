@@ -150,21 +150,24 @@ export default class Board {
     this.renderEntities();
   }
 
-  private gateChecker() {
-    this.master.cells.forEach(masterCell => {
-      this.gates.forEach(gate => {
-        if (!gate.unlocked) {
-          Array.from(gate.unlockZones).forEach(([cell, cellLockState]) => {
-            if (
-              !cellLockState.unlocked &&
-              cellLockState.unlockCells.find(z => z.col === masterCell.col && z.row === masterCell.row)
-            ) {
+  private scanGates() {
+    this.gates.forEach(gate => {
+      if (!gate.unlocked) {
+        gate.lockDataMap.forEach(({ keyCells, unlocked }, cell) => {
+          this.master.cells.forEach(masterCell => {
+            if (!unlocked && keyCells.find(c => c.col === masterCell.col && c.row === masterCell.row)) {
               gate.unlock(cell, this.context, this.cellSize);
             }
           });
-        }
-      });
+        });
+      }
     });
+  }
+
+  private checkWinCondition() {
+    return this.master.cells.every(masterCell =>
+      this.target.cells.some(targetCell => targetCell.col === masterCell.col && targetCell.row === masterCell.row)
+    );
   }
 
   private onPointerDown = (event: PointerEvent) => {
@@ -216,7 +219,11 @@ export default class Board {
               this.activeBlock.master ? Colors.MASTER : Colors.MOVABLE
             );
 
-            if (this.activeBlock.master) this.gateChecker();
+            if (this.activeBlock.master && this.checkWinCondition()) {
+              console.log("win!");
+            } else {
+              this.scanGates();
+            }
 
             this.activeCell = { ...this.cellFromPoint };
           } else if (this.activeBlock.contains(this.cellFromPoint)) {
