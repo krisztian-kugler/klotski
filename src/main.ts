@@ -36,23 +36,23 @@ export abstract class Klotski {
   }
 
   static renderPreviews() {
-    this.sets["level 1"].forEach((board: Puzzle) => {
+    this.sets["level 1"].forEach((puzzle: Puzzle) => {
       const container = document.createElement("div");
       container.classList.add("board-thumbnail");
       container.innerHTML = `
           <div class="preview"></div>
-          <div class="board-name">${board.name}</div>
+          <div class="board-name">${puzzle.name}</div>
       `;
       document.querySelector(".set-content").insertAdjacentElement("beforeend", container);
+      const previewElement = container.querySelector(".preview") as HTMLElement;
 
-      const b = new Board(Puzzles.daisy, {
-        host: boardContainer,
-        name: puzzleName,
-        moveCount: moveCount,
+      new Board({
+        puzzle,
+        hostElement: previewElement,
+        nameElement: puzzleName,
       });
-      if (!document.querySelector(".preview").innerHTML) b.attach(".preview");
-      const boardPreview = new BoardPreview(board);
-      console.log(boardPreview);
+
+      const boardPreview = new BoardPreview(puzzle);
     });
 
     /* const template = `
@@ -73,14 +73,13 @@ export abstract class Klotski {
 
 const oldBoard = new OldBoard(Puzzles.daisy);
 oldBoard.mount(".board-container");
-console.log(oldBoard);
 
-const board = new Board(Puzzles.daisy, {
-  host: boardContainer,
-  name: puzzleName,
-  moveCount: moveCount,
+const board = new Board({
+  puzzle: Puzzles.daisy,
+  hostElement: boardContainer,
+  nameElement: puzzleName,
+  moveCountElement: moveCount,
 });
-board.attach(".board-container");
 console.log(board);
 
 document.querySelector(".header").addEventListener("click", function () {

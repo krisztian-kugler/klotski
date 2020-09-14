@@ -1,12 +1,11 @@
-import { Position, Cell, Puzzle, DisplayConfig, MoveHistoryEntry } from "./interfaces";
+import { Position, Cell, Puzzle, MoveHistoryEntry, BoardConfig } from "./interfaces";
 import { Colors, Axis, Direction } from "./enums";
 import { Target, Block, MovableBlock, GateBlock, WallBlock } from "./entities";
 import CoverageMatrix from "./coverage-matrix";
 import { isDifferentCell, isSameCell } from "./utils";
-import { Klotski } from "./main";
 
 export default class Board {
-  private cellSize = 30;
+  private cellSize = 15;
   private cols: number;
   private rows: number;
   private canvas: HTMLCanvasElement;
@@ -44,31 +43,38 @@ export default class Board {
 
   set moveCount(value: number) {
     this._moveCount = value;
-    if (this.displayConfig?.moveCount) this.displayConfig.moveCount.innerText = this.moveCount.toString();
+    if (this.config.moveCountElement) this.config.moveCountElement.innerText = this.moveCount.toString();
   }
 
   get moveCount(): number {
     return this._moveCount;
   }
 
-  constructor(puzzle: Puzzle, private displayConfig?: DisplayConfig) {
-    if (this.displayConfig?.name) this.displayConfig.name.innerText = puzzle.name;
-    this.cols = puzzle.cols;
-    this.rows = puzzle.rows;
+  constructor(private config: BoardConfig) {
+    if (this.config.nameElement) this.config.nameElement.innerText = config.puzzle.name;
+    if (this.config.moveCountElement) this.config.moveCountElement.innerText = this.moveCount.toString();
+    this.cols = config.puzzle.cols;
+    this.rows = config.puzzle.rows;
     this.createBoard();
-    this.createEntities(puzzle);
+    this.createEntities();
     this.renderEntities();
-    this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
+    this.appendToHost();
     this.setupCoverageMatrix();
+  }
+
+  private init() {}
+
+  private appendToHost() {
+    this.config.hostElement.append(this.canvas);
+    this.canvas.addEventListener("pointerdown", this.dragStart);
+    document.addEventListener("pointermove", this.dragMove);
+    document.addEventListener("pointerup", this.dragEnd);
   }
 
   attach(selector: string) {
     const host = document.querySelector(selector);
     if (host) {
       host.append(this.canvas);
-      this.canvas.addEventListener("pointerdown", this.dragStart);
-      document.addEventListener("pointermove", this.dragMove);
-      document.addEventListener("pointerup", this.dragEnd);
     } else {
       throw new Error(`Board cannot be attached to '${selector}'. Element doesn't exist.`);
     }
@@ -99,7 +105,8 @@ export default class Board {
     this.context = this.canvas.getContext("2d");
   }
 
-  private createEntities(puzzle: Puzzle) {
+  private createEntities() {
+    const { puzzle } = this.config;
     this.target = new Target(puzzle.target, this.canvas);
     this.master = new MovableBlock(puzzle.master, this.canvas, true);
     this.movables = puzzle.movables?.map(cells => new MovableBlock(cells, this.canvas));
@@ -108,6 +115,7 @@ export default class Board {
   }
 
   private setupCoverageMatrix() {
+    if (!this.coverageMatrix) this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     [this.master, ...this.movables, ...this.gates, ...this.walls].forEach(block => {
       this.coverageMatrix.setValues(block.cells, false);
     });

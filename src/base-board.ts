@@ -22,8 +22,7 @@ export default class BaseBoard {
     gates: <GateBlock[]>[],
   };
 
-  constructor(config: BoardConfig) {
-    this.puzzle = config.puzzle;
+  constructor(protected config: BoardConfig) {
     this.cols = config.puzzle.cols;
     this.rows = config.puzzle.rows;
     this.cellSize = config.cellSize || 10;

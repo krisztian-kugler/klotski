@@ -33,7 +33,7 @@ export interface DisplayConfig {
 
 export interface BoardConfig {
   puzzle: Puzzle;
-  cellSize: number;
+  cellSize?: number;
   hostElement: HTMLElement;
   nameElement?: HTMLElement;
   moveCountElement?: HTMLElement;
