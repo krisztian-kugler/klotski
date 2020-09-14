@@ -1,16 +1,19 @@
 import { GateBlock, MovableBlock, Target, WallBlock } from "./entities";
-import { BoardConfig } from "./interfaces";
+import { BoardConfig, MoveHistoryEntry } from "./interfaces";
 
 export default class BaseBoard {
   protected cellSize = 10;
   protected cols: number;
   protected rows: number;
   protected canvas: HTMLCanvasElement;
+  protected context: CanvasRenderingContext2D;
   protected target: Target;
   protected master: MovableBlock;
   protected movables: MovableBlock[] = [];
   protected walls: WallBlock[] = [];
   protected gates: GateBlock[] = [];
+  protected moveHistory: MoveHistoryEntry[] = [];
+  protected name: string;
 
   constructor(config: BoardConfig) {
     this.cols = config.puzzle.cols;
@@ -18,5 +21,11 @@ export default class BaseBoard {
     this.cellSize = config.cellSize || 10;
   }
 
-  protected init() {}
+  protected createBoard() {
+    this.canvas = document.createElement("canvas");
+    this.canvas.classList.add("canvas");
+    this.canvas.width = this.cols * this.cellSize;
+    this.canvas.height = this.rows * this.cellSize;
+    this.context = this.canvas.getContext("2d");
+  }
 }

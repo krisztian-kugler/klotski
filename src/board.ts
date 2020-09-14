@@ -6,26 +6,32 @@ import { isDifferentCell, isSameCell } from "./utils";
 import { Klotski } from "./main";
 
 export default class Board {
-  cellSize = Klotski.mainBoardCellSize;
-  private isPlaying = true;
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private coverageMatrix: CoverageMatrix;
+  private cellSize = 30;
   private cols: number;
   private rows: number;
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
   private target: Target;
   private master: MovableBlock;
   private movables: MovableBlock[] = [];
+  private walls: WallBlock[] = [];
   private gates: GateBlock[] = [];
-  private walls: Block[] = [];
+  private moveHistory: MoveHistoryEntry[] = [];
+  private name: string;
+
+  private isPlaying = true;
+  private coverageMatrix: CoverageMatrix;
   private cellFromPoint: Cell; // Cell at the current pointer position
   private activeBlock: MovableBlock; // The block that's currently being dragged
   private activeCell: Cell; // The cell of the active block at the current pointer position
-  private moveHistory: MoveHistoryEntry[] = [];
   private moveFrom: Cell;
   private moveTo: Cell;
   private _moveCount = 0;
   private _dragging = false;
+
+  set puzzle(puzzle: Puzzle) {
+    this.name = puzzle.name;
+  }
 
   set dragging(value: boolean) {
     this._dragging = value;
