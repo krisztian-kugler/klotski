@@ -1,5 +1,5 @@
 import { GateBlock, MovableBlock, Target, WallBlock } from "./entities";
-import { BoardConfig, MoveHistoryEntry } from "./interfaces";
+import { BoardConfig, MoveHistoryEntry, Puzzle } from "./interfaces";
 
 export default class BaseBoard {
   protected cellSize = 10;
@@ -14,8 +14,16 @@ export default class BaseBoard {
   protected gates: GateBlock[] = [];
   protected moveHistory: MoveHistoryEntry[] = [];
   protected name: string;
+  protected puzzle: Puzzle;
+  protected entities = {
+    target: <Target>null,
+    movables: <MovableBlock[]>[],
+    walls: <WallBlock[]>[],
+    gates: <GateBlock[]>[],
+  };
 
   constructor(config: BoardConfig) {
+    this.puzzle = config.puzzle;
     this.cols = config.puzzle.cols;
     this.rows = config.puzzle.rows;
     this.cellSize = config.cellSize || 10;

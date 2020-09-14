@@ -52,7 +52,7 @@ export default class Board {
   }
 
   constructor(puzzle: Puzzle, private displayConfig?: DisplayConfig) {
-    if (this.displayConfig?.name) this.displayConfig.name.innerText = "Puzzle name";
+    if (this.displayConfig?.name) this.displayConfig.name.innerText = puzzle.name;
     this.cols = puzzle.cols;
     this.rows = puzzle.rows;
     this.createBoard();
