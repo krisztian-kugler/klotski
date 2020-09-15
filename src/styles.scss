@@ -61,12 +61,12 @@ body {
     }
   }
 
-  .logo {
+  .puzzle-name {
     justify-self: center;
     font-size: 1.5rem;
   }
 
-  .version {
+  .move-counter {
     justify-self: right;
     font-weight: 600;
   }
@@ -88,7 +88,7 @@ body {
 
   color: white;
   transform: translateY(0);
-  transition: transform 150ms ease-in-out;
+  transition: transform 100ms ease-in-out;
 
   &.hidden {
     transform: translateY(calc(-100vh + 4rem));

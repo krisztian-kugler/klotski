@@ -1,41 +1,36 @@
 import "./styles.scss";
-import { OldBoard } from "./old.board";
-import Board from "./board";
-import * as Puzzles from "./puzzles";
-import { Puzzle } from "./interfaces";
-import BoardPreview from "./board-preview";
+import BaseBoard from "./base-board";
+import MainBoard from "./board";
+import { Puzzle, PuzzleCollection } from "./interfaces";
 
 const boardContainer: HTMLElement = document.querySelector(".board-container");
 const puzzleName: HTMLElement = document.querySelector(".puzzle-name");
 const moveCount: HTMLElement = document.querySelector(".move-count");
 
-export abstract class Klotski {
-  static sets: { [key: string]: Puzzle[] };
-
-  static mainBoardCellSize = 30;
-  static previewBoardCellSize = 10;
+abstract class Klotski {
+  private static sets: PuzzleCollection;
+  private static mainBoardCellSize = 30;
+  private static previewBoardCellSize = 10;
+  static mainBoard: MainBoard;
 
   static async init() {
     this.sets = await this.loadPuzzles("boards.json");
-
     const save = localStorage.getItem("klotski-save");
-
-    if (save) {
-      // display preview position
-    } else {
-      // show welcome message
-    }
-
+    save ? this.renderSavedPosition() : this.renderWelcomeMessage();
     this.renderPreviews();
   }
 
-  static loadPuzzles(url: string): Promise<{ [key: string]: Puzzle[] }> {
+  private static loadPuzzles(url: string): Promise<PuzzleCollection> {
     return fetch(url)
       .then(response => response.json())
       .catch(console.log);
   }
 
-  static renderPreviews() {
+  private static renderSavedPosition() {}
+
+  private static renderWelcomeMessage() {}
+
+  private static renderPreviews() {
     this.sets["level 1"].forEach(puzzle => {
       const container = document.createElement("div");
       container.classList.add("board-thumbnail");
@@ -46,41 +41,30 @@ export abstract class Klotski {
       document.querySelector(".set-content").insertAdjacentElement("beforeend", container);
       const previewElement = container.querySelector(".preview") as HTMLElement;
 
-      new Board({
+      new BaseBoard({
         puzzle,
         hostElement: previewElement,
         nameElement: puzzleName,
       });
 
-      const boardPreview = new BoardPreview(puzzle);
+      container.addEventListener("click", () => {
+        boardContainer.innerHTML = "";
+        this.mainBoard = new MainBoard({
+          puzzle,
+          cellSize: 40,
+          hostElement: boardContainer,
+          nameElement: puzzleName,
+          moveCountElement: moveCount,
+        });
+        document.querySelector(".home-screen").classList.toggle("hidden");
+      });
     });
+  }
 
-    /* const template = `
-      <div class="set-container">
-        ${this.sets.map((set: any[]) => {
-          return `
-            <div>
-              ${set.map((board: any) => {
-                return `<klotski-canvas width=${board.cols} height=${board.rows}></klotski-canvas>`;
-              })}
-            </div>
-          `;
-        })}
-      </div>
-    `; */
+  private static calcCellSize(): number {
+    return 50;
   }
 }
-
-const oldBoard = new OldBoard(Puzzles.daisy);
-oldBoard.mount(".board-container");
-
-const board = new Board({
-  puzzle: Puzzles.daisy,
-  hostElement: boardContainer,
-  nameElement: puzzleName,
-  moveCountElement: moveCount,
-});
-console.log(board);
 
 document.querySelector(".header").addEventListener("click", function () {
   document.querySelector(".home-screen").classList.toggle("hidden");
@@ -88,7 +72,7 @@ document.querySelector(".header").addEventListener("click", function () {
 
 document.querySelector(".reset").addEventListener("click", (event: PointerEvent) => {
   event.stopPropagation();
-  board.reset();
+  Klotski.mainBoard.reset();
 });
 
 Klotski.init();

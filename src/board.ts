@@ -1,23 +1,11 @@
-import { Position, Cell, Puzzle, MoveHistoryEntry, BoardConfig } from "./interfaces";
-import { Colors, Axis, Direction } from "./enums";
-import { Target, Block, MovableBlock, GateBlock, WallBlock } from "./entities";
+import BaseBoard from "./base-board";
 import CoverageMatrix from "./coverage-matrix";
+import { MovableBlock, GateBlock } from "./entities";
+import { Position, Cell, BoardConfig } from "./interfaces";
+import { Axis, Direction } from "./enums";
 import { isDifferentCell, isSameCell } from "./utils";
 
-export default class Board {
-  private cellSize = 15;
-  private cols: number;
-  private rows: number;
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private target: Target;
-  private master: MovableBlock;
-  private movables: MovableBlock[] = [];
-  private walls: WallBlock[] = [];
-  private gates: GateBlock[] = [];
-  private moveHistory: MoveHistoryEntry[] = [];
-  private name: string;
-
+export default class MainBoard extends BaseBoard {
   private isPlaying = true;
   private coverageMatrix: CoverageMatrix;
   private cellFromPoint: Cell; // Cell at the current pointer position
@@ -25,12 +13,7 @@ export default class Board {
   private activeCell: Cell; // The cell of the active block at the current pointer position
   private moveFrom: Cell;
   private moveTo: Cell;
-  private _moveCount = 0;
   private _dragging = false;
-
-  set puzzle(puzzle: Puzzle) {
-    this.name = puzzle.name;
-  }
 
   set dragging(value: boolean) {
     this._dragging = value;
@@ -41,30 +24,13 @@ export default class Board {
     return this._dragging;
   }
 
-  set moveCount(value: number) {
-    this._moveCount = value;
-    if (this.config.moveCountElement) this.config.moveCountElement.innerText = this.moveCount.toString();
-  }
-
-  get moveCount(): number {
-    return this._moveCount;
-  }
-
-  constructor(private config: BoardConfig) {
-    if (this.config.nameElement) this.config.nameElement.innerText = config.puzzle.name;
-    if (this.config.moveCountElement) this.config.moveCountElement.innerText = this.moveCount.toString();
-    this.cols = config.puzzle.cols;
-    this.rows = config.puzzle.rows;
-    this.cellSize = config.cellSize || 10;
-    this.createBoard();
-    this.createEntities();
-    this.renderEntities();
-    this.attachBoard();
+  constructor(config: BoardConfig) {
+    super(config);
     this.setupCoverageMatrix();
+    this.addEventListeners();
   }
 
-  private attachBoard() {
-    this.config.hostElement.append(this.canvas);
+  addEventListeners() {
     this.canvas.addEventListener("pointerdown", this.dragStart);
     document.addEventListener("pointermove", this.dragMove);
     document.addEventListener("pointerup", this.dragEnd);
@@ -87,37 +53,11 @@ export default class Board {
     this.renderEntities();
   }
 
-  private createBoard() {
-    this.canvas = document.createElement("canvas");
-    this.canvas.classList.add("canvas");
-    this.canvas.width = this.cols * this.cellSize;
-    this.canvas.height = this.rows * this.cellSize;
-    this.context = this.canvas.getContext("2d");
-  }
-
-  private createEntities() {
-    const { puzzle } = this.config;
-    this.target = new Target(puzzle.target, this.canvas);
-    this.master = new MovableBlock(puzzle.master, this.canvas, true);
-    this.movables = puzzle.movables?.map(cells => new MovableBlock(cells, this.canvas));
-    this.gates = puzzle.gates?.map(cells => new GateBlock(cells, this.canvas));
-    this.walls = puzzle.walls?.map(cells => new WallBlock(cells, this.canvas));
-  }
-
   private setupCoverageMatrix() {
     if (!this.coverageMatrix) this.coverageMatrix = new CoverageMatrix(this.cols, this.rows);
     [this.master, ...this.movables, ...this.gates, ...this.walls].forEach(block => {
       this.coverageMatrix.setValues(block.cells, false);
     });
-  }
-
-  private renderEntities() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.target.render(this.context, this.cellSize);
-    this.master.render(this.context, this.cellSize);
-    this.movables.forEach(movable => movable.render(this.context, this.cellSize));
-    this.gates.forEach(destructible => destructible.render(this.context, this.cellSize, Colors.DESTRUCTIBLE));
-    this.walls.forEach(wall => wall.render(this.context, this.cellSize, Colors.WALL));
   }
 
   private getPosition(event: PointerEvent): Position {
@@ -131,31 +71,6 @@ export default class Board {
     const col = Math.floor(position.x / this.cellSize);
     const row = Math.floor(position.y / this.cellSize);
     return { col, row };
-  }
-
-  private getBlock(cell: Cell): Block {
-    return [this.master, ...this.movables, ...this.gates, ...this.walls].find(block =>
-      block.cells.find(c => isSameCell(c, cell))
-    );
-  }
-
-  private replay() {
-    this.moveHistory.forEach(entry => {
-      const block = this.getBlock(entry.from) as MovableBlock;
-      const colOffset = entry.to.col - entry.from.col;
-      const rowOffset = entry.to.row - entry.from.row;
-
-      if (colOffset !== 0) {
-        const direction = colOffset > 0 ? Direction.UP : Direction.DOWN;
-        block.move(Axis.COL, direction, Math.abs(colOffset));
-      }
-
-      if (rowOffset !== 0) {
-        const direction = rowOffset > 0 ? Direction.UP : Direction.DOWN;
-        block.move(Axis.ROW, direction, Math.abs(rowOffset));
-      }
-    });
-    this.renderEntities();
   }
 
   private scanGates() {

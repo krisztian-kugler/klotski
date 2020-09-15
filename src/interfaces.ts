@@ -23,6 +23,10 @@ export interface Puzzle {
   gates?: Cell[][];
 }
 
+export interface PuzzleCollection {
+  [key: string]: Puzzle[];
+}
+
 export interface DisplayConfig {
   host?: HTMLElement;
   name?: HTMLElement;
