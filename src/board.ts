@@ -55,29 +55,19 @@ export default class Board {
     if (this.config.moveCountElement) this.config.moveCountElement.innerText = this.moveCount.toString();
     this.cols = config.puzzle.cols;
     this.rows = config.puzzle.rows;
+    this.cellSize = config.cellSize || 10;
     this.createBoard();
     this.createEntities();
     this.renderEntities();
-    this.appendToHost();
+    this.attachBoard();
     this.setupCoverageMatrix();
   }
 
-  private init() {}
-
-  private appendToHost() {
+  private attachBoard() {
     this.config.hostElement.append(this.canvas);
     this.canvas.addEventListener("pointerdown", this.dragStart);
     document.addEventListener("pointermove", this.dragMove);
     document.addEventListener("pointerup", this.dragEnd);
-  }
-
-  attach(selector: string) {
-    const host = document.querySelector(selector);
-    if (host) {
-      host.append(this.canvas);
-    } else {
-      throw new Error(`Board cannot be attached to '${selector}'. Element doesn't exist.`);
-    }
   }
 
   resize(cellSize: number) {

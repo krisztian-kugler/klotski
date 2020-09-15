@@ -2,7 +2,7 @@ import { GateBlock, MovableBlock, Target, WallBlock } from "./entities";
 import { BoardConfig, MoveHistoryEntry, Puzzle } from "./interfaces";
 
 export default class BaseBoard {
-  protected cellSize = 10;
+  protected cellSize: number;
   protected cols: number;
   protected rows: number;
   protected canvas: HTMLCanvasElement;

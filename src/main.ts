@@ -10,7 +10,7 @@ const puzzleName: HTMLElement = document.querySelector(".puzzle-name");
 const moveCount: HTMLElement = document.querySelector(".move-count");
 
 export abstract class Klotski {
-  static sets: any;
+  static sets: { [key: string]: Puzzle[] };
 
   static mainBoardCellSize = 30;
   static previewBoardCellSize = 10;
@@ -29,14 +29,14 @@ export abstract class Klotski {
     this.renderPreviews();
   }
 
-  static loadPuzzles(url: string): Promise<any> {
+  static loadPuzzles(url: string): Promise<{ [key: string]: Puzzle[] }> {
     return fetch(url)
       .then(response => response.json())
       .catch(console.log);
   }
 
   static renderPreviews() {
-    this.sets["level 1"].forEach((puzzle: Puzzle) => {
+    this.sets["level 1"].forEach(puzzle => {
       const container = document.createElement("div");
       container.classList.add("board-thumbnail");
       container.innerHTML = `
