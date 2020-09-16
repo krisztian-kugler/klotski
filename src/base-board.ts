@@ -1,9 +1,10 @@
 import { Target, MovableBlock, WallBlock, GateBlock, Block } from "./entities";
-import { BoardConfig, Cell, MoveHistoryEntry } from "./interfaces";
+import { BoardConfig, Cell, MoveHistoryEntry, Puzzle } from "./interfaces";
 import { Colors, Axis, Direction } from "./enums";
 import { isSameCell } from "./utils";
 
 export default class BaseBoard {
+  protected puzzle: Puzzle;
   protected cellSize: number;
   protected cols: number;
   protected rows: number;
@@ -27,6 +28,7 @@ export default class BaseBoard {
   }
 
   constructor(protected config: BoardConfig) {
+    this.puzzle = JSON.parse(JSON.stringify(config.puzzle));
     if (this.config.nameElement) this.config.nameElement.innerText = config.puzzle.name;
     this.moveCount = 0;
     this.cols = config.puzzle.cols;
@@ -48,12 +50,11 @@ export default class BaseBoard {
   }
 
   protected createEntities() {
-    const { puzzle } = this.config;
-    this.target = new Target(puzzle.target, this.canvas);
-    this.master = new MovableBlock(puzzle.master, this.canvas, true);
-    this.movables = puzzle.movables?.map(cells => new MovableBlock(cells, this.canvas));
-    this.gates = puzzle.gates?.map(cells => new GateBlock(cells, this.canvas));
-    this.walls = puzzle.walls?.map(cells => new WallBlock(cells, this.canvas));
+    this.target = new Target(this.puzzle.target, this.canvas);
+    this.master = new MovableBlock(this.puzzle.master, this.canvas, true);
+    this.movables = this.puzzle.movables?.map(cells => new MovableBlock(cells, this.canvas));
+    this.gates = this.puzzle.gates?.map(cells => new GateBlock(cells, this.canvas));
+    this.walls = this.puzzle.walls?.map(cells => new WallBlock(cells, this.canvas));
   }
 
   protected replay() {

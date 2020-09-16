@@ -9,8 +9,6 @@ const moveCount: HTMLElement = document.querySelector(".move-count");
 
 abstract class Klotski {
   private static sets: PuzzleCollection;
-  private static mainBoardCellSize = 30;
-  private static previewBoardCellSize = 10;
   static mainBoard: MainBoard;
 
   static async init() {
