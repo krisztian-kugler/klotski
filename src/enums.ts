@@ -13,5 +13,6 @@ export enum Colors {
   MASTER = "rgb(226, 67, 67)",
   MOVABLE = "rgb(247, 209, 86)",
   DESTRUCTIBLE = "rgb(13, 218, 110)",
-  WALL = "rgb(61, 129, 199)",
+  WALL = "rgb(68, 159, 218)",
+  // WALL = "rgb(61, 129, 199)",
 }

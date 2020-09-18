@@ -36,7 +36,10 @@ export default class BaseBoard {
     this.cellSize = config.cellSize || 15;
     this.createBoard();
     this.createEntities();
-    if (this.moveHistory.length) this.replay();
+    if (config.moveHistory?.length) {
+      this.moveHistory = config.moveHistory;
+      this.replay();
+    }
     this.renderEntities();
     this.attachBoard();
   }

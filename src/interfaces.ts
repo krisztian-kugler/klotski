@@ -1,4 +1,5 @@
 import { Axis, Direction } from "./enums";
+import MoveHistory from "./move-history";
 
 export type Difficulty = "easy" | "medium" | "hard";
 
@@ -85,4 +86,9 @@ export interface MoveHistoryEntry {
 export interface CellLockData {
   keyCells: Cell[];
   unlocked: boolean;
+}
+
+export interface SaveData {
+  name: string;
+  moveHistory: MoveHistoryEntry[];
 }

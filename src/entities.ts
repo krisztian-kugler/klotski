@@ -2,6 +2,8 @@ import { Cell, Render, BorderDescriptor, Destroy, Reset, Move, Unlock, CellLockD
 import { Axis, Colors, Direction } from "./enums";
 import { isSameCell } from "./utils";
 
+const gap = 1;
+
 export abstract class Entity {
   constructor(public cells: Cell[], protected canvas: HTMLCanvasElement) {}
 }
@@ -16,13 +18,13 @@ export class Target extends Entity implements Render {
   render(context: CanvasRenderingContext2D, cellSize: number) {
     context.fillStyle = Colors.TARGET;
     this.cells.forEach(cell =>
-      context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4)
+      context.fillRect(cell.col * cellSize + gap, cell.row * cellSize + gap, cellSize - gap * 2, cellSize - gap * 2)
     );
   }
 
   renderCell(cell: Cell, context: CanvasRenderingContext2D, cellSize: number) {
     context.fillStyle = Colors.TARGET;
-    context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4);
+    context.fillRect(cell.col * cellSize + gap, cell.row * cellSize + gap, cellSize - gap * 2, cellSize - gap * 2);
   }
 }
 
@@ -41,17 +43,19 @@ export abstract class Block extends Entity implements Render {
   render(context: CanvasRenderingContext2D, cellSize: number, color: string) {
     context.fillStyle = color;
     this.cells.forEach(cell => {
-      context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + 2, cellSize - 4, cellSize - 4);
+      context.fillRect(cell.col * cellSize + gap, cell.row * cellSize + gap, cellSize - gap * 2, cellSize - gap * 2);
       const border = this.borders.get(cell);
-      if (border.top) context.fillRect(cell.col * cellSize + 2, cell.row * cellSize, cellSize - 4, 2);
-      if (border.bottom) context.fillRect(cell.col * cellSize + 2, cell.row * cellSize + cellSize - 2, cellSize - 4, 2);
-      if (border.left) context.fillRect(cell.col * cellSize, cell.row * cellSize + 2, 2, cellSize - 4);
-      if (border.right) context.fillRect(cell.col * cellSize + cellSize - 2, cell.row * cellSize + 2, 2, cellSize - 4);
-      if (border.topLeft) context.fillRect(cell.col * cellSize, cell.row * cellSize, 2, 2);
-      if (border.topRight) context.fillRect(cell.col * cellSize + cellSize - 2, cell.row * cellSize, 2, 2);
-      if (border.bottomLeft) context.fillRect(cell.col * cellSize, cell.row * cellSize + cellSize - 2, 2, 2);
+      if (border.top) context.fillRect(cell.col * cellSize + gap, cell.row * cellSize, cellSize - gap * 2, gap);
+      if (border.bottom)
+        context.fillRect(cell.col * cellSize + gap, cell.row * cellSize + cellSize - gap, cellSize - gap * 2, gap);
+      if (border.left) context.fillRect(cell.col * cellSize, cell.row * cellSize + gap, gap, cellSize - gap * 2);
+      if (border.right)
+        context.fillRect(cell.col * cellSize + cellSize - gap, cell.row * cellSize + gap, gap, cellSize - gap * 2);
+      if (border.topLeft) context.fillRect(cell.col * cellSize, cell.row * cellSize, gap, gap);
+      if (border.topRight) context.fillRect(cell.col * cellSize + cellSize - gap, cell.row * cellSize, gap, gap);
+      if (border.bottomLeft) context.fillRect(cell.col * cellSize, cell.row * cellSize + cellSize - gap, gap, gap);
       if (border.bottomRight)
-        context.fillRect(cell.col * cellSize + cellSize - 2, cell.row * cellSize + cellSize - 2, 2, 2);
+        context.fillRect(cell.col * cellSize + cellSize - gap, cell.row * cellSize + cellSize - gap, gap, gap);
     });
   }
 

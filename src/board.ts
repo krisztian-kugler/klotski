@@ -1,7 +1,7 @@
 import BaseBoard from "./base-board";
 import CoverageMatrix from "./coverage-matrix";
 import { MovableBlock, GateBlock } from "./entities";
-import { Position, Cell, BoardConfig } from "./interfaces";
+import { Position, Cell, BoardConfig, SaveData } from "./interfaces";
 import { Axis, Direction } from "./enums";
 import { isDifferentCell, isSameCell } from "./utils";
 
@@ -51,6 +51,7 @@ export default class MainBoard extends BaseBoard {
     [this.master, ...this.movables, ...this.gates].forEach(block => block.reset());
     this.setupCoverageMatrix();
     this.renderEntities();
+    localStorage.removeItem("klotski-save");
   }
 
   private setupCoverageMatrix() {
@@ -152,6 +153,7 @@ export default class MainBoard extends BaseBoard {
                 console.log("you won!");
                 this.dragEnd();
                 this.isPlaying = false;
+                localStorage.removeItem("klotski-save");
               } else {
                 this.scanGates();
               }
@@ -176,6 +178,11 @@ export default class MainBoard extends BaseBoard {
       if (isDifferentCell(this.moveFrom, this.moveTo)) {
         this.moveHistory.push({ from: this.moveFrom, to: this.moveTo });
         this.moveCount = this.moveHistory.length;
+        const saveData: SaveData = {
+          name: this.puzzle.name,
+          moveHistory: this.moveHistory,
+        };
+        localStorage.setItem("klotski-save", JSON.stringify(saveData));
       }
 
       this.coverageMatrix.setValues(this.activeBlock.cells, false);
