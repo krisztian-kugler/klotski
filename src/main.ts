@@ -3,6 +3,29 @@ import BaseBoard from "./base-board";
 import MainBoard from "./board";
 import { Puzzle, PuzzleCollection, SaveData } from "./interfaces";
 
+const menuItems = [
+  {
+    label: "New Game",
+    description: "Select a puzzle and start a new game",
+  },
+  {
+    label: "Continue",
+    description: "Pick up where you left off",
+  },
+  {
+    label: "Settings",
+    description: "Change theme, language and sound settings",
+  },
+  {
+    label: "Tutorial",
+    description: "Learn how to play Klotski",
+  },
+  {
+    label: "GitHub",
+    description: "Go to the GitHub repository of this project",
+  },
+];
+
 const boardContainer: HTMLElement = document.querySelector(".board-container");
 const puzzleName: HTMLElement = document.querySelector(".puzzle-name");
 const moveCount: HTMLElement = document.querySelector(".move-count");
@@ -10,6 +33,18 @@ const moveCount: HTMLElement = document.querySelector(".move-count");
 abstract class Klotski {
   private static sets: PuzzleCollection;
   static mainBoard: MainBoard;
+
+  static renderMenu(items: { label: string; description: string }[]) {
+    document.querySelector(".menu").innerHTML = items.reduce(
+      (acc, item) =>
+        (acc += `
+          <li class="menu-item">
+            <span class="menu-item__label">${item.label}</span>
+            <span class="menu-item__description">${item.description}</span>
+          </li>`),
+      ""
+    );
+  }
 
   static async init() {
     this.sets = await this.loadPuzzles("boards.json");
@@ -103,3 +138,4 @@ document.querySelector(".reset").addEventListener("click", (event: PointerEvent)
 });
 
 Klotski.init();
+Klotski.renderMenu(menuItems);

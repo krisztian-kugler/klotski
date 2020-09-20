@@ -41,25 +41,26 @@ body {
   }
 
   .menu {
+    display: grid;
+    row-gap: 1.75rem;
+    width: fit-content;
     list-style: none;
+    user-select: none;
 
     &-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: 10rem auto;
+      justify-items: start;
       align-items: baseline;
       color: #ffbc5c;
-      font-size: 18px;
       font-weight: 600;
       line-height: 1;
 
-      &:not(:last-child) {
-        margin-bottom: 30px;
-      }
-
       &__label {
-        width: 10rem;
+        font-size: 1.25rem;
         letter-spacing: 0.5px;
-        cursor: pointer;
         transition: all 50ms;
+        cursor: pointer;
 
         &:hover {
           color: #fff500;
@@ -69,8 +70,7 @@ body {
 
       &__description {
         color: rgb(128, 128, 128);
-        font-size: 14px;
-        user-select: none;
+        font-size: 0.875rem;
       }
     }
   }
@@ -230,13 +230,13 @@ body {
   padding-top: 4rem;
 }
 
-.title {
+/* .title {
   color: white;
   margin-bottom: 1rem;
   font-size: 2rem;
   font-weight: 600;
   text-align: center;
-}
+} */
 
 .board-container {
   display: grid;
