@@ -60,10 +60,11 @@ abstract class Klotski {
     document.querySelector(".menu").innerHTML = items.reduce(
       (acc, item) =>
         (acc += `
-              <li class="menu-item">
-                <span class="menu-item__label">${item.label}</span>
-                <span class="menu-item__description">${item.description}</span>
-              </li>`),
+          <li class="menu-item">
+            <span class="menu-item__label ${item.id === "continue" ? "disabled" : ""}">${item.label}</span>
+            <span class="menu-item__description">${item.description}</span>
+          </li>
+        `),
       ""
     );
   }
