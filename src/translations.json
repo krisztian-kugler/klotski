@@ -1,0 +1,53 @@
+{
+  "en": {
+    "menuItems": [
+      {
+        "id": "new-game",
+        "label": "New Game",
+        "description": "Select a puzzle and start a new game"
+      },
+      {
+        "id": "continue",
+        "label": "Continue",
+        "description": "Pick up where you left off"
+      },
+      {
+        "label": "Settings",
+        "description": "Change theme, language and sound settings"
+      },
+      {
+        "label": "Tutorial",
+        "description": "Learn how to play Klotski"
+      },
+      {
+        "label": "GitHub",
+        "description": "Go to the GitHub repository of this project"
+      }
+    ]
+  },
+  "hu": {
+    "menuItems": [
+      {
+        "label": "Új játék",
+        "description": "Válassz egy feladványt"
+      },
+      {
+        "id": "continue",
+        "label": "Folytatás",
+        "description": "A legutóbbi mentett állás folytatása"
+      },
+      {
+        "label": "Beállítások",
+        "description": "Téma-, nyelv- és hangbeállítások"
+      },
+      {
+        "label": "Ismertető",
+        "description": "Gyorstalpaló a Klotski szabályairól"
+      },
+      {
+        "label": "GitHub",
+        "description": "Tekints meg a projekt GitHub oldalát"
+      }
+    ]
+  }
+}

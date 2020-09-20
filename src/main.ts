@@ -1,7 +1,8 @@
 import "./styles.scss";
 import BaseBoard from "./base-board";
 import MainBoard from "./board";
-import { Puzzle, PuzzleCollection, SaveData } from "./interfaces";
+import { PuzzleCollection, SaveData } from "./interfaces";
+import { Language } from "./enums";
 
 const menuItems = [
   {
@@ -32,21 +33,44 @@ const moveCount: HTMLElement = document.querySelector(".move-count");
 
 abstract class Klotski {
   private static sets: PuzzleCollection;
+  private static translations: any;
   static mainBoard: MainBoard;
+  static language: Language;
 
-  static renderMenu(items: { label: string; description: string }[]) {
+  static changeLanguage(language: Language = Language.ENGLISH) {
+    this.language = language;
+    console.log(this.translations);
+    this.updateMenuItems(this.language);
+  }
+
+  private static updateMenuItems(language: Language) {
+    document.querySelectorAll(".menu-item").forEach((item, i) => {
+      item.innerHTML = `<span class="menu-item__label">${this.translations[language].menuItems[i].label}</span>
+      <span class="menu-item__description">${this.translations[language].menuItems[i].description}</span>`;
+    });
+  }
+
+  private static loadTranslations() {
+    return fetch("translations.json")
+      .then(response => response.json())
+      .catch(console.log);
+  }
+
+  static renderMenu(items: { label: string; description: string; id?: string }[]) {
     document.querySelector(".menu").innerHTML = items.reduce(
       (acc, item) =>
         (acc += `
-          <li class="menu-item">
-            <span class="menu-item__label">${item.label}</span>
-            <span class="menu-item__description">${item.description}</span>
-          </li>`),
+              <li class="menu-item">
+                <span class="menu-item__label">${item.label}</span>
+                <span class="menu-item__description">${item.description}</span>
+              </li>`),
       ""
     );
   }
 
   static async init() {
+    this.translations = await this.loadTranslations();
+    this.renderMenu(this.translations[Language.ENGLISH].menuItems);
     this.sets = await this.loadPuzzles("boards.json");
     const save = localStorage.getItem("klotski-save");
     save ? this.renderSavedPosition(save) : this.renderWelcomeMessage();
@@ -137,5 +161,12 @@ document.querySelector(".reset").addEventListener("click", (event: PointerEvent)
   Klotski.mainBoard.reset();
 });
 
+document.querySelector(".lang-en")?.addEventListener("click", () => {
+  Klotski.changeLanguage(Language.ENGLISH);
+});
+
+document.querySelector(".lang-hu")?.addEventListener("click", () => {
+  Klotski.changeLanguage(Language.HUNGARIAN);
+});
+
 Klotski.init();
-Klotski.renderMenu(menuItems);

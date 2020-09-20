@@ -16,3 +16,8 @@ export enum Colors {
   WALL = "rgb(68, 159, 218)",
   // WALL = "rgb(61, 129, 199)",
 }
+
+export enum Language {
+  ENGLISH = "en",
+  HUNGARIAN = "hu",
+}
